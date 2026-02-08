@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        .container { max-width: 500px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #007BFF; color: #fff; border: none; cursor: pointer; border-radius: 5px; }
+        .error { color: red; }
+        .message { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create an Account</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if message %}
+            <p class="message">{{ message }}</p>
+            <button onclick="window.location.href='{% url login %}'">Go to Login</button>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="first_name" placeholder="First Name" required>
+            <input type="text" name="last_name" placeholder="Last Name" required>
+            <input type="number" name="graduation_year" placeholder="Year of Graduation" required>
+            <input type="text" name="field_of_study" placeholder="Field of Study" required>
+            <input type="date" name="dob" placeholder="Date of Birth" required>
+            <select name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="text" name="nationality" placeholder="Nationality" required>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>

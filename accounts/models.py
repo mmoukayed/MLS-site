@@ -10,17 +10,17 @@ class Majors(models.Model):
     name = models.CharField()
 
 class MemberManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, date_of_birth, gender, password=None, **extra_fields):
+    def create_user(self, first_name, last_name, email, date_of_birth, gender, **extra_fields):
         if not email or not first_name or not last_name or not date_of_birth or not gender:
             raise ValueError("Value is required")
 
         email = self.normalize_email(email)
         user = self.model(email=email, first_name=first_name, last_name=last_name,date_of_birth=date_of_birth,gender=gender, **extra_fields)
-        user.set_password(password)
-        user.save()
+        user.set_unusable_password()
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, date_of_birth, gender, password=None, **extra_fields):
+    def create_superuser(self, first_name, last_name, email, date_of_birth, gender, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -30,7 +30,7 @@ class MemberManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True")
 
-        return self.create_user(first_name, last_name, email, date_of_birth, gender, password, **extra_fields)
+        return self.create_user(first_name, last_name, email, date_of_birth, gender, **extra_fields)
 
 class Member(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField()
@@ -52,10 +52,25 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return self.first_name + " " + self.last_name
-    
+
     # def create_user(self, email, firstname, lastname, dob, gender, password=None):
 
 
     def __str__(self):
         return self.email
-    
+
+
+class EmailOTP(models.Model):
+    email = models.EmailField()
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    class EmailOTP(models.Model):
+        email = models.EmailField()
+        otp = models.CharField(max_length=6)
+        created_at = models.DateTimeField(auto_now_add=True)
+        is_used = models.BooleanField(default=False)
+
+        def __str__(self):
+            return f"{self.email} - {self.otp}"
