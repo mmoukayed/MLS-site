@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link rel="stylesheet" href="styling/app-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard">
+
+<!-- Neural Network Background Canvas -->
+<canvas id="neural-network"></canvas>
+
+<!-- Navigation -->
+<nav class="dashboard-nav">
+  <div class="dashboard-nav-left">
+    <a href="student-dashboard.html" class="dashboard-logo">MLS</a>
+    <div class="dashboard-nav-links">
+      <a href="student-dashboard.html" class="active">Dashboard</a>
+      <a href="student-teams.html">Teams</a>
+      <a href="student-events.html">Events</a>
+      <a href="student-profile.html">Profile</a>
+    </div>
+  </div>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+    <button class="btn btn-small btn-secondary" onclick="window.location.href='index.html'">Sign Out</button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="dashboard-content">
+  <!-- Welcome Section -->
+  <div class="dashboard-welcome">
+    <h1>Welcome back, John!</h1>
+    <p>Computer Science • Class of 2026</p>
+  </div>
+
+  <!-- Invitations Alert -->
+  <div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <strong>You have 2 team invitations!</strong>
+      <p style="margin-top: 0.25rem; opacity: 0.9;">Review and accept invitations to join teams</p>
+    </div>
+    <button class="btn btn-small btn-primary">
+      <span>View Invitations</span>
+      <div class="btn-glow"></div>
+    </button>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- My Teams Card -->
+    <div class="dashboard-card fade-in visible">
+      <div class="dashboard-card-header">
+        <h2 class="dashboard-card-title">My Teams</h2>
+        <span class="badge badge-primary">3 Teams</span>
+      </div>
+
+      <ul class="item-list">
+        <li class="item" onclick="window.location.href='team-detail.html'">
+          <div class="item-header">
+            <span class="item-title">ML Research Group</span>
+            <span class="badge badge-warning">Owner</span>
+          </div>
+          <div class="item-meta">5 members</div>
+        </li>
+
+        <li class="item" onclick="window.location.href='team-detail.html'">
+          <div class="item-header">
+            <span class="item-title">AI Ethics Committee</span>
+            <span class="badge badge-primary">Member</span>
+          </div>
+          <div class="item-meta">8 members</div>
+        </li>
+
+        <li class="item" onclick="window.location.href='team-detail.html'">
+          <div class="item-header">
+            <span class="item-title">Hackathon Warriors</span>
+            <span class="badge badge-primary">Member</span>
+          </div>
+          <div class="item-meta">4 members</div>
+        </li>
+      </ul>
+
+      <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='teams.html'">
+        <span>Browse All Teams</span>
+        <div class="btn-glow"></div>
+      </button>
+    </div>
+
+    <!-- Upcoming Events Card -->
+    <div class="dashboard-card fade-in visible">
+      <div class="dashboard-card-header">
+        <h2 class="dashboard-card-title">Upcoming Events</h2>
+      </div>
+
+      <ul class="item-list">
+        <li class="item">
+          <div class="item-header">
+            <span class="item-title">Introduction to Neural Networks</span>
+          </div>
+          <div class="item-meta">Friday, Feb 21, 2026 • 6:00 PM</div>
+          <div style="margin-top: 0.75rem;">
+            <button class="btn btn-small btn-primary">
+              <span>Register</span>
+              <div class="btn-glow"></div>
+            </button>
+          </div>
+        </li>
+
+        <li class="item">
+          <div class="item-header">
+            <span class="item-title">Spring Hackathon 2026</span>
+          </div>
+          <div class="item-meta">Saturday, Mar 15, 2026 • 9:00 AM</div>
+          <div style="margin-top: 0.75rem;">
+            <button class="btn btn-small btn-primary">
+              <span>Register</span>
+              <div class="btn-glow"></div>
+            </button>
+          </div>
+        </li>
+
+        <li class="item">
+          <div class="item-header">
+            <span class="item-title">ML Project Showcase</span>
+          </div>
+          <div class="item-meta">Friday, Apr 10, 2026 • 5:00 PM</div>
+          <div style="margin-top: 0.75rem;">
+            <button class="btn btn-small btn-primary">
+              <span>Register</span>
+              <div class="btn-glow"></div>
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='events.html'">
+        View All Events
+      </button>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="dashboard-card fade-in visible">
+      <div class="dashboard-card-header">
+        <h2 class="dashboard-card-title">Quick Actions</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='teams.html'">
+          <span>Create New Team</span>
+          <div class="btn-glow"></div>
+        </button>
+
+        <button class="btn btn-secondary" style="width: 100%;">
+          Join a Team
+        </button>
+
+        <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='profile.html'">
+          Edit Profile
+        </button>
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: 12px;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Weekly Tip</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+          Did you know? Team owners can invite members directly by email. Check out the Teams page to send invitations!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Add scroll animation observer
+  const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  const fadeElements = document.querySelectorAll('.fade-in');
+  fadeElements.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

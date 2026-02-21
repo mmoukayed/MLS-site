@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link rel="stylesheet" href="styling/app-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard">
+
+<canvas id="neural-network"></canvas>
+
+<nav class="dashboard-nav">
+  <div class="dashboard-nav-left">
+    <a href="student-dashboard.html" class="dashboard-logo">MLS</a>
+    <div class="dashboard-nav-links">
+      <a href="student-dashboard.html">Dashboard</a>
+      <a href="student-teams.html">Teams</a>
+      <a href="student-events.html">Events</a>
+      <a href="student-profile.html" class="active">Profile</a>
+    </div>
+  </div>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <button class="theme-toggle" id="theme-toggle">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+    <button class="btn btn-small btn-secondary" onclick="window.location.href='index.html'">Sign Out</button>
+  </div>
+</nav>
+
+<div class="dashboard-content" style="max-width: 800px;">
+  <div class="dashboard-welcome">
+    <h1>My Profile</h1>
+    <p>Manage your personal information</p>
+  </div>
+
+  <div class="dashboard-card fade-in visible">
+    <form>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" value="John">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" value="Doe">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" value="john.doe@rit.edu" readonly style="opacity: 0.7;">
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Graduation Year</label>
+          <input type="number" class="form-input" value="2026">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input" value="2002-05-15">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Major / Field of Study</label>
+        <input type="text" class="form-input" value="Computer Science">
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-select">
+            <option value="male" selected>Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nationality</label>
+          <input type="text" class="form-input" value="United States">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary" style="flex: 1;">
+          <span>Save Changes</span>
+          <div class="btn-glow"></div>
+        </button>
+        <button type="button" class="btn btn-secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

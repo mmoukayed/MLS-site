@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Neural Network Background Canvas -->
+<canvas id="neural-network"></canvas>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="nav-left">
+    <img src="assets/Light.jpeg" class="logo" id="logo" alt="RIT Logo">
+    <span>Machine Learning Society</span>
+  </div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#activities">Activities</a>
+    <a href="#join">Join</a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay">
+    <h1 class="hero-title">
+      <span class="word">Machine</span>
+      <span class="word">Learning</span>
+      <span class="word">Society</span>
+    </h1>
+    <p class="hero-subtitle">Rochester Institute of Technology</p>
+    <a href="login.html" class="btn">
+      <span>Join the Community</span>
+      <div class="btn-glow"></div>
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section fade-in">
+  <div class="section-header">
+    <h2>Who We Are</h2>
+    <div class="section-line"></div>
+  </div>
+  <p>
+    The Machine Learning Society at RIT is a student-led community passionate about
+    artificial intelligence, data science, and real-world problem solving.
+  </p>
+  <img src="assets/mascot.png" class="center-image float-animation" alt="MLS Mascot">
+</section>
+
+<!-- ACTIVITIES -->
+<section id="activities" class="section dark fade-in">
+  <div class="section-header">
+    <h2>What We Do</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card" data-tilt>
+      <div class="card-glow"></div>
+      <img src="assets/workshop.jpg" alt="Workshops">
+      <div class="card-content">
+        <h3>Workshops</h3>
+        <p>Hands-on sessions on ML, Python, neural networks, and modern AI tools.</p>
+      </div>
+    </div>
+
+    <div class="card" data-tilt>
+      <div class="card-glow"></div>
+      <img src="assets/hackathon.jpg" alt="Hackathons">
+      <div class="card-content">
+        <h3>Hackathons</h3>
+        <p>Collaborate, compete, and build innovative AI solutions as a team.</p>
+      </div>
+    </div>
+
+    <div class="card" data-tilt>
+      <div class="card-glow"></div>
+      <img src="assets/project.jpeg" alt="Projects">
+      <div class="card-content">
+        <h3>Projects</h3>
+        <p>Work on real-world ML projects and build a strong portfolio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join" class="section join fade-in">
+  <div class="section-header">
+    <h2>Why Join MLS?</h2>
+    <div class="section-line"></div>
+  </div>
+  <ul class="benefits-list">
+    <li class="benefit-item">
+      <span class="benefit-icon">✓</span>
+      <span>Learn industry-relevant machine learning skills</span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-icon">✓</span>
+      <span>Collaborate with like-minded students</span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-icon">✓</span>
+      <span>Build projects and portfolios</span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-icon">✓</span>
+      <span>Prepare for careers in AI & Data Science</span>
+    </li>
+  </ul>
+
+  <a href="login.html" class="btn big">
+    <span>Become a Member</span>
+    <div class="btn-glow"></div>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© Machine Learning Society — Rochester Institute of Technology</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

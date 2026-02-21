@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Profile - RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link rel="stylesheet" href="styling/app-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Neural Network Background Canvas -->
+<canvas id="neural-network"></canvas>
+
+<div class="auth-container">
+  <div class="auth-card" style="max-width: 600px;">
+    <h1>Complete Your Profile</h1>
+    <p>Please provide your information to finish setting up your account</p>
+
+    <form id="profileForm">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input type="text" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input type="text" class="form-input" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Student Email *</label>
+        <input type="email" class="form-input" placeholder="abc1234@rit.edu" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Graduation Year</label>
+          <input type="number" class="form-input" min="2020" max="2035" placeholder="2026">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Major</label>
+        <input type="text" class="form-input" placeholder="Computing and IT">
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-select">
+            <option value="">Select...</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nationality</label>
+          <input type="text" class="form-input" placeholder="United States">
+        </div>
+      </div>
+
+      <button type="submit" class="btn big" style="width: 100%; margin-top: 1.5rem;">
+        <span>Complete Profile</span>
+        <div class="btn-glow"></div>
+      </button>
+    </form>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" style="position: absolute; top: 1.5rem; right: 1.5rem;">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  document.getElementById('profileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // In real app, save profile and redirect
+    window.location.href = 'dashboard.html';
+  });
+</script>
+
+</body>
+</html>

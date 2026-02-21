@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link rel="stylesheet" href="styling/app-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Neural Network Background Canvas -->
+<canvas id="neural-network"></canvas>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <h1>Welcome Back</h1>
+    <p>Sign in to access your dashboard</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input 
+          type="email" 
+          class="form-input" 
+          placeholder="your.email@rit.edu"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Login Method</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="auth-method" value="magic-link" checked>
+            <span>Magic Link</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="auth-method" value="otp">
+            <span>OTP Code</span>
+          </label>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">
+          No password required - we'll send you a secure link or code
+        </p>
+      </div>
+
+      <div id="otp-section" style="display: none;">
+        <div class="form-group">
+          <label class="form-label">Enter OTP Code</label>
+          <input 
+            type="text" 
+            class="form-input" 
+            placeholder="000000"
+            maxlength="6"
+            pattern="[0-9]{6}"
+          >
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+            Check your email for the 6-digit code
+          </p>
+        </div>
+      </div>
+
+      <button type="submit" class="btn big" style="width: 100%; margin-top: 1rem;">
+        <span>Continue</span>
+        <div class="btn-glow"></div>
+      </button>
+    </form>
+
+    <div style="margin-top: 2rem; text-align: center;">
+      <p style="color: var(--text-secondary);">
+        Don't have an account?
+        <a href="signup.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">
+          Sign up
+        </a>
+      </p>
+    </div>
+
+    <div style="margin-top: 1rem; text-align: center;">
+      <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.875rem;">
+        ← Back to home
+      </a>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" style="position: absolute; top: 1.5rem; right: 1.5rem;">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Handle auth method toggle
+  const radioButtons = document.querySelectorAll('input[name="auth-method"]');
+  const otpSection = document.getElementById('otp-section');
+  
+  radioButtons.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.value === 'otp') {
+        otpSection.style.display = 'block';
+      } else {
+        otpSection.style.display = 'none';
+      }
+    });
+  });
+
+  // Handle form submission
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const authMethod = document.querySelector('input[name="auth-method"]:checked').value;
+    
+    if (authMethod === 'magic-link') {
+      alert('Magic link sent! Check your email.');
+    } else {
+      alert('OTP sent! Check your email for the code.');
+    }
+    
+    // In real app, this would redirect to dashboard
+    // window.location.href = 'dashboard.html';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Detail - RIT Machine Learning Society</title>
+  <link rel="stylesheet" href="styling/styles.css">
+  <link rel="stylesheet" href="styling/app-styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard">
+
+<canvas id="neural-network"></canvas>
+
+<nav class="dashboard-nav">
+  <div class="dashboard-nav-left">
+    <a href="student-dashboard.html" class="dashboard-logo">MLS</a>
+    <div class="dashboard-nav-links">
+      <a href="student-dashboard.html">Dashboard</a>
+      <a href="student-teams.html" class="active">Teams</a>
+      <a href="student-events.html">Events</a>
+      <a href="student-profile.html">Profile</a>
+    </div>
+  </div>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <button class="theme-toggle" id="theme-toggle">
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+    <button class="btn btn-small btn-secondary" onclick="window.location.href='index.html'">Sign Out</button>
+  </div>
+</nav>
+
+<div class="dashboard-content">
+  <div style="margin-bottom: 1rem;">
+    <a href="teams.html" style="color: var(--text-secondary); text-decoration: none;">← Back to Teams</a>
+  </div>
+
+  <div class="dashboard-card fade-in visible">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-family: 'Syne', sans-serif; font-size: 2.5rem; margin-bottom: 0.5rem;">ML Research Group</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+          Conducting research on deep learning applications in computer vision
+        </p>
+        <div style="display: flex; gap: 0.75rem;">
+          <span class="badge badge-primary">5 Members</span>
+          <span class="badge badge-warning">Owner</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-primary">
+          <span>Invite Members</span>
+          <div class="btn-glow"></div>
+        </button>
+        <button class="btn btn-danger">Leave Team</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Members</button>
+      <button class="tab">Join Requests</button>
+      <button class="tab">Settings</button>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <h3 style="margin-bottom: 1rem;">Team Members</h3>
+      <ul class="item-list">
+        <li class="item">
+          <div class="item-header">
+            <div>
+              <span class="item-title">Sarah Johnson</span>
+              <div class="item-meta">sarah.johnson@rit.edu • Computer Science '26</div>
+            </div>
+            <span class="badge badge-warning">Owner</span>
+          </div>
+        </li>
+        <li class="item">
+          <div class="item-header">
+            <div>
+              <span class="item-title">John Doe</span>
+              <div class="item-meta">john.doe@rit.edu • Data Science '26</div>
+            </div>
+            <span class="badge badge-primary">Member</span>
+          </div>
+        </li>
+        <li class="item">
+          <div class="item-header">
+            <div>
+              <span class="item-title">Emily Zhang</span>
+              <div class="item-meta">emily.zhang@rit.edu • AI Engineering '25</div>
+            </div>
+            <span class="badge badge-primary">Member</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
