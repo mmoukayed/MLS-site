@@ -5,9 +5,11 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django_countries.fields import CountryField
 from django.utils import timezone
 
-class Majors(models.Model):
+class Major(models.Model):
     code = models.CharField()
     name = models.CharField()
+    def __str__(self) -> str:
+        return self.code + " - " + self.name
 
 class MemberManager(BaseUserManager):
     def create_user(self, first_name, last_name, email, date_of_birth, gender, **extra_fields):
@@ -36,7 +38,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField()
     last_name = models.CharField()
     email = models.EmailField(unique=True)
-    major = models.ForeignKey(Majors, on_delete=models.CASCADE, blank=True, null=True)
+    major = models.ForeignKey(Major, on_delete=models.CASCADE, blank=True, null=True)
     gender = models.CharField("Gender (M/F)", choices=[("M","Male"),("F","Female")],default="M")
     date_of_birth = models.DateField("Date Of Birth (YYYY-MM-DD)")
     graduation_year = models.CharField(blank=True, null=True)

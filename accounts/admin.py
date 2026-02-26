@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Member
+from .models import *
 
 
 class MemberAdmin(UserAdmin):
@@ -55,6 +55,8 @@ class MemberAdmin(UserAdmin):
     )
 
     # list_f
-
+class MajorAdmin(admin.ModelAdmin):
+    list_display = ("code", "name")
 
 admin.site.register(Member, MemberAdmin)
+admin.site.register(Major, MajorAdmin)
