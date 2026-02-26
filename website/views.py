@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.handlers.wsgi import WSGIRequest
 # from django.contrib.auth.decorators import login_required
@@ -10,7 +10,6 @@ import json
 # Create your views here.
 @csrf_exempt
 def home(request):
-    print(type(request))
     return render(request, "index.html")
 
 @csrf_exempt
@@ -20,6 +19,15 @@ def teams(request):
     else:
         return HttpResponse(request.method + "",status=405)
 
+def meet_the_team(request):
+    return render(request, "meettheteam.html")
+
+
+def student_dashboard(request: WSGIRequest):
+    if not request.user.is_authenticated:
+        # return HttpResponse(json.dumps({"message": "Not Logged In","error":20}),status=401)
+        return redirect("/")
+    return render(request, "student-dashboard.html")
 
 @csrf_exempt
 def create_team(request: WSGIRequest):

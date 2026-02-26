@@ -1,10 +1,197 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>{% block pageTitle %}{% endblock pageTitle %} | Machine Learning Society</title>
+    <title>{% block pageTitle %}{% endblock pageTitle %} | RIT Machine Learning Society</title>
+    <link rel="stylesheet" href="{% static "styles.css" %}">
+    <link rel="stylesheet" href="{% static "app-styles.css" %}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    {% block body %}{% endblock body %}
+    <canvas id="neural-network"></canvas>
+    <div id="msg" class="message"></div>
+    <header class="navbar">
+    <div class="nav-left">
+        <img src="{% static "assets/MLS Logo.png" %}" class="logo" id="logo" alt="RIT Logo">
+        <a href="/"><span>Machine Learning Society</span></a>
+    </div>
+    <nav>
+        {% if request.user.is_authenticated %}
+        <a href="{% url "student_dashboard" %}">Dashboard</a>
+        {% endif %}
+        <a href="/#about">About</a>
+        <a href="/#activities">Activities</a>
+        <a href="{% url "meet-the-team" %}">Team</a>
+        <a href="/#join">Join</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        
+        </button>
+        <button class="theme-toggle" onclick="showLoginPrompt()">
+            <img>
+        </button>
+    </nav>
+    </header>
+    {% block content %}{% endblock content %}
+    <div class="account-popup-bg" hidden onclick="if(event.target == this) {dismissPrompt()}">
+        <form class="account-popup" onsubmit="requestLogin(event)" id="login-form" hidden>
+            <h1>Login</h1>
+            {% csrf_token %}
+            <div id="login-options" class="columnizer">
+                <button class="login-btn" type=button>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 10px;"><img src="{% static "assets/Google Logo.svg" %}" width=24 height=24></img> <span>Login With Google</span></div>
+                    <div class="btn-glow login"></div>
+                </button>
+                <button class="login-btn" type=button>
+                    <span>Login With Passkey</span>
+                    <div class="btn-glow login"></div>
+                </button>
+                
+                <p>Or</p>
+                <input
+                        class="login-box"
+                        type="email"
+                        id="login-email"
+                        placeholder="RIT Email"
+                        required
+                        autocomplete="email"
+                        pattern="^.+@(rit\.edu|g\.rit\.edu)$"
+                        title="Please use your RIT email address"
+                    />
+                <button class="login-btn" id="submitBtn" type="submit">
+                    <span>Email OTP</span>
+                    <div class="btn-glow login"></div>
+                </button>
+            </div>
+            <div id="login-otp" class="columnizer" hidden style="gap: 20px">
+                <a onclick="transitionToLoginOptions()"><- Back</a>
+                <h2>Check Your Email</h2>
+                <div class="email-display">
+                    Sent to: <strong id="emailDisplayLogin"></strong>
+                </div>
+                <div class="otp-input-container">
+                    <input type="text" class="otp-digit" maxlength="1" id="digit1" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit2" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit3" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit4" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit5" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit6" />
+                </div>
+                <div class="timer" id="timer">
+                    Code expires in <strong id="countdown">5:00</strong>
+                </div>
+                <p class="resend-text">Didn't receive the code?</p>
+                <button class="login-btn" id="resendBtn" onclick="resendCode()">
+                    <span class="spinner" hidden></span>
+                    <span class="default-text">Resend Code</span>
+                </button>
+                <button class="btn" type="normal" onclick="loginOTP(event)">
+                    <span>Verify & Login</span>
+                    <div class="btn-glow login"></div>
+                </button>
+            </div>
+            <p>Don't have an account? <a onclick='showSignupPrompt()'>Sign Up</a></p>
+        </form>
+        <form class="account-popup" onsubmit='requestSignup(event)' id="signup-form" hidden>
+            <h1>Signup</h1>
+            {% csrf_token %}
+            <div id="signup-options" class="columnizer">
+                <button class="login-btn" type=button>
+                    <span>Signup With Google</span>
+                    <div class="btn-glow login"></div>
+                </button>
+                <p>Or</p>
+                <input
+                        class="login-box"
+                        type="email"
+                        id="signup-email"
+                        placeholder="RIT Email"
+                        name="email"
+                        required
+                        autocomplete="email"
+                        pattern="^.+@(rit\.edu|g\.rit\.edu)$"
+                        title="Please use your RIT email address"
+                    />
+                <button class="login-btn" type=button onclick="transitionToSignupEmailPopup()">
+                    <span>Next</span>
+                    <div class="btn-glow login"></div>
+                </button>
+            </div>
+            <div id="signup-by-email" class="columnizer" hidden style="gap: 20px">
+                <a onclick="transitionToSignupOptions()"><- Back</a>
+                <input class="login-box" type="text" name="first_name" placeholder="First Name" required>
+                <input class="login-box" type="text" name="last_name" placeholder="Last Name" required>
+                <input class="login-box" type="number" name="graduation_year" placeholder="Year of Graduation" required>
+                <select class="login-box" name="field_of_study" required>
+                    <option value="" disabled selected>Field of Study</option>
+                    {% for major in majors %}
+                    <option value="{{major.pk}}">{{major}}</option>
+                    {% endfor %}
+                </select>
+                <input class="login-box" type="date" name="dob" placeholder="Date of Birth" required>
+                <select class="login-box" name="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="F">Female</option>
+                    <option value="M">Male</option>
+                    <option value="O">Other</option>
+                </select>
+                <select class="login-box" name="nationality" required>
+                    <option value="" disabled selected>Nationality</option>
+                    {% for nationality in nationalities %}
+                    <option value="{{nationality.0}}">{{nationality.1}}</option>
+                    {% endfor %}
+                </select>
+                <button class="login-btn" id="email-otp-btn" type="submit">
+                    <span class="spinner" hidden></span>
+                    <span>Email OTP</span>
+                    <div class="btn-glow login"></div>
+                </button>
+            </div>
+            <div id="email-verify-otp" class="columnizer" hidden style="gap: 20px">
+                <a onclick="transitionToSignupOptions()"><- Back</a>
+                <h2>Check Your Email</h2>
+                <div class="email-display">
+                    Sent to: <strong id="emailDisplay"></strong>
+                </div>
+                <div class="otp-input-container">
+                    <input type="text" class="otp-digit" maxlength="1" id="digit1" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit2" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit3" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit4" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit5" />
+                    <input type="text" class="otp-digit" maxlength="1" id="digit6" />
+                </div>
+                <div class="timer" id="timer">
+                    Code expires in <strong id="countdown">5:00</strong>
+                </div>
+                <p class="resend-text">Didn't receive the code?</p>
+                <button class="login-btn" id="resendBtn" onclick="resendCode()">
+                    <span class="spinner" hidden></span>
+                    <span class="default-text">Resend Code</span>
+                </button>
+                <button class="btn" type="normal" onclick="loginOTP(event)">
+                    <span>Verify & Login</span>
+                    <div class="btn-glow login"></div>
+                </button>
+            </div>
+            <p>Already have an account? <a onclick="showLoginPrompt()">Log In</a></p>
+        </form>
+    </div>
+    <script src="{% static "loginPrompt.js" %}"></script>
+    <script src="{% static "loginProcessor.js" %}"></script>
 </body>
 </html>

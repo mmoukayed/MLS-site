@@ -6,8 +6,10 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
+from django_countries import countries
+from django.core.handlers.wsgi import WSGIRequest
 
-from .models import Member, EmailOTP
+from .models import Member, EmailOTP, Major
 from .emails import send_login_email
 from .auth_utils import verify_magic_token
 from .validators import university_email_validator
@@ -166,6 +168,7 @@ def resend_otp(request):
         return JsonResponse({"message": "New OTP sent"})
 
     except Exception as e:
+        print(e)
         return JsonResponse({"error": "Something went wrong"}, status=500)
 
 
@@ -192,16 +195,16 @@ def otp_page(request):
 
 
 @require_http_methods(["GET", "POST"])
-def signup(request):
+def signup(request: WSGIRequest):
     if request.method == "POST":
         try:
             email = request.POST["email"]
             university_email_validator(email)
 
             if Member.objects.filter(email=email).exists():
-                return render(request, "accounts/signup.html", {
+                return HttpResponse(json.dumps({
                     "error": "Account already exists"
-                })
+                }), status=409)
 
             request.session["pending_signup"] = {
                 "email": email,
@@ -211,23 +214,29 @@ def signup(request):
                 "gender": request.POST["gender"],
                 "graduation_year": request.POST.get("graduation_year"),
                 "nationality": request.POST.get("nationality"),
+                "major": request.POST.get("field_of_study"), 
             }
 
             request.session["otp_email"] = email
             request.session.modified = True
             send_login_email(email)
+            return HttpResponse(json.dumps({
+                'success': True,
+                "message": "Account Created! Please Verify!",
+                "email":email
+            }),status=200)
             return redirect(f"/auth/otp/?email={email}")
 
         except Exception as e:
-            return render(request, "accounts/signup.html", {
+            print(e)
+            return HttpResponse(json.dumps({
                 "error": str(e)
-            })
+            }),status=500) 
 
     return render(request, "accounts/signup.html")
 
 
 
 def logout_view(request):
-    if request.method == "POST":
-        logout(request)
-        return redirect("/")
+    logout(request)
+    return redirect("/")

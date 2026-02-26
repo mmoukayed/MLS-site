@@ -5,6 +5,9 @@
     {% csrf_token %}
     <button type="submit">Logout</button>
   </form>
+  {% if request.user.is_staff %}
+  <a href="/admin"><button>Admin Portal</button></a>
+  {% endif %}
 {% else %}
   Hi there
   <form method="post" action="{% url 'login' %}">

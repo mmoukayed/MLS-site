@@ -24,8 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home),
     path('teams/',views.teams),
-    path('team/',include('website.teamUrls'))
+    path('meet-the-team/',views.meet_the_team, name="meet-the-team"),
+    path('team/',include('website.teamUrls')),
     # include("team/",urls.teamUrls)
     path('',views.home),
-    path("auth/", include("accounts.urls"))
+    path("auth/", include("accounts.urls")),
+    
+    path("dashboard/", views.student_dashboard, name="student_dashboard")
 ]

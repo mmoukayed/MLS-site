@@ -39,7 +39,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField()
     email = models.EmailField(unique=True)
     major = models.ForeignKey(Major, on_delete=models.CASCADE, blank=True, null=True)
-    gender = models.CharField("Gender (M/F)", choices=[("M","Male"),("F","Female")],default="M")
+    gender = models.CharField("Gender (M/F)", choices=[("M","Male"),("F","Female"),("O","Other")],default="M")
     date_of_birth = models.DateField("Date Of Birth (YYYY-MM-DD)")
     graduation_year = models.CharField(blank=True, null=True)
     nationality = CountryField(blank=True, null=True)
