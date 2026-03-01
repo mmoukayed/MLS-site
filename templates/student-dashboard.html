@@ -8,19 +8,19 @@
   <!-- Welcome Section -->
   <div class="dashboard-welcome">
     <h1>Welcome back, {{ request.user.first_name }} !</h1>
-    <p>{{ request.user.major.name }} • Class of {{ request.user.graduation_year }} </p>
+    <p>{{ request.user.major }} • Class of {{ request.user.graduation_year }} </p>
   </div>
 
   <!-- Invitations Alert -->
   <div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <strong>You have 2 team invitations!</strong>
+      <strong>You have pending team invitations!</strong>
       <p style="margin-top: 0.25rem; opacity: 0.9;">Review and accept invitations to join teams</p>
     </div>
-    <button class="btn btn-small btn-primary">
-      <span>View Invitations</span>
+    <a href="{% url 'website:teams' %}" class="btn btn-small">
+      <span>View Teams</span>
       <div class="btn-glow"></div>
-    </button>
+    </a>
   </div>
 
   <!-- Dashboard Grid -->
@@ -33,7 +33,7 @@
       </div>
 
       <ul class="item-list">
-        <li class="item" onclick="window.location.href='team-detail.html'">
+        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=1 %}'">
           <div class="item-header">
             <span class="item-title">ML Research Group</span>
             <span class="badge badge-warning">Owner</span>
@@ -41,7 +41,7 @@
           <div class="item-meta">5 members</div>
         </li>
 
-        <li class="item" onclick="window.location.href='team-detail.html'">
+        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=2 %}'">
           <div class="item-header">
             <span class="item-title">AI Ethics Committee</span>
             <span class="badge badge-primary">Member</span>
@@ -49,7 +49,7 @@
           <div class="item-meta">8 members</div>
         </li>
 
-        <li class="item" onclick="window.location.href='team-detail.html'">
+        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=3 %}'">
           <div class="item-header">
             <span class="item-title">Hackathon Warriors</span>
             <span class="badge badge-primary">Member</span>
@@ -58,7 +58,7 @@
         </li>
       </ul>
 
-      <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='teams.html'">
+      <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="{% url 'website:teams' %}">
         <span>Browse All Teams</span>
         <div class="btn-glow"></div>
       </button>
@@ -111,7 +111,7 @@
         </li>
       </ul>
 
-      <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='events.html'">
+      <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='{% url 'website:events' %}'">
         View All Events
       </button>
     </div>
@@ -123,7 +123,7 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='teams.html'">
+        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='{% url 'website:teams' %}'">
           <span>Create New Team</span>
           <div class="btn-glow"></div>
         </button>
@@ -132,7 +132,7 @@
           Join a Team
         </button>
 
-        <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='profile.html'">
+        <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='{% url 'website:profile' %}'">
           Edit Profile
         </button>
       </div>

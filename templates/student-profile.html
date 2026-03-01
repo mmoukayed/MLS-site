@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+% extends "base.html" %}
 {% load static %}
 {% block pageTitle %}Profile{% endblock pageTitle %}
 {% block content %}
@@ -10,66 +10,86 @@
   </div>
 
   <div class="dashboard-card fade-in visible">
-    <form>
+    <form id="profileForm" onsubmit="saveProfile(event)">
+      {% csrf_token %}
+
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
         <div class="form-group">
           <label class="form-label">First Name</label>
-          <input type="text" class="form-input" value="John">
+          <input type="text" name="first_name" class="form-input" value="{{ request.user.first_name }}" required>
         </div>
         <div class="form-group">
           <label class="form-label">Last Name</label>
-          <input type="text" class="form-input" value="Doe">
+          <input type="text" name="last_name" class="form-input" value="{{ request.user.last_name }}" required>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">Email</label>
-        <input type="email" class="form-input" value="john.doe@rit.edu" readonly style="opacity: 0.7;">
+        <input type="email" class="form-input" value="{{ request.user.email }}" readonly
+               style="opacity: 0.6; cursor: not-allowed;" title="Email cannot be changed">
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
         <div class="form-group">
           <label class="form-label">Graduation Year</label>
-          <input type="number" class="form-input" value="2026">
+          <input type="number" name="graduation_year" class="form-input" value="{{ request.user.graduation_year }}" min="2024" max="2035">
         </div>
         <div class="form-group">
           <label class="form-label">Date of Birth</label>
-          <input type="date" class="form-input" value="2002-05-15">
+          <input type="date" name="dob" class="form-input" value="{{ request.user.date_of_birth|date:'Y-m-d' }}">
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">Major / Field of Study</label>
-        <input type="text" class="form-input" value="Computer Science">
+        <select name="field_of_study" class="form-select">
+          <option value="" disabled>Select Major</option>
+          {% for major in majors %}
+          <option value="{{ major.pk }}" {% if request.user.major == major %}selected{% endif %}>{{ major }}</option>
+          {% endfor %}
+        </select>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
         <div class="form-group">
           <label class="form-label">Gender</label>
-          <select class="form-select">
-            <option value="male" selected>Male</option>
-            <option value="female">Female</option>
-            <option value="non-binary">Non-binary</option>
-            <option value="prefer-not-to-say">Prefer not to say</option>
+          <select name="gender" class="form-select">
+            <option value="M" {% if request.user.gender == "M" %}selected{% endif %}>Male</option>
+            <option value="F" {% if request.user.gender == "F" %}selected{% endif %}>Female</option>
+            <option value="O" {% if request.user.gender == "O" %}selected{% endif %}>Other</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Nationality</label>
-          <input type="text" class="form-input" value="United States">
+          <select name="nationality" class="form-select">
+            <option value="" disabled>Select Nationality</option>
+            {% for code, name in nationalities %}
+            <option value="{{ code }}" {% if request.user.nationality.code == code %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+          </select>
         </div>
       </div>
 
       <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <button type="submit" class="btn btn-primary" style="flex: 1;">
+        <button type="submit" class="btn" style="flex: 1;">
           <span>Save Changes</span>
           <div class="btn-glow"></div>
         </button>
-        <button type="button" class="btn btn-secondary">Cancel</button>
+        <a href="{% url 'website:student_dashboard' %}" class="btn btn-secondary">Cancel</a>
       </div>
     </form>
   </div>
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+  async function saveProfile(e) {
+    e.preventDefault();
+    // TODO: wire to a profile-update API endpoint
+    alert('Profile saved! (Backend endpoint pending)');
+  }
+</script>
+{% endblock extra_scripts %}
+
+{% endblock content %}

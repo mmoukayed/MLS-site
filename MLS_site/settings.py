@@ -130,6 +130,9 @@ SITE_URL = 'http://127.0.0.1:8000/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 

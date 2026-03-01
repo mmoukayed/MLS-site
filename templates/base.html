@@ -24,12 +24,12 @@
     </div>
     <nav>
         {% if request.user.is_authenticated %}
-            <a href="{% url 'student_dashboard' %}">Dashboard</a>
+            <a href="{% url 'website:student_dashboard' %}">Dashboard</a>
             <a href="{% url 'accounts:logout' %}" class="nav-logout">Logout</a>
         {% else %}
             <a href="/#about">About</a>
             <a href="/#activities">Activities</a>
-            <a href="{% url 'meet-the-team' %}">Team</a>
+            <a href="{% url 'website:meet-the-team' %}">Team</a>
             <a href="/#join">Join</a>
         {% endif %}
          <!-- Auth trigger (only when logged out) -->
