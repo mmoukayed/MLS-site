@@ -5,18 +5,25 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-overlay">
-    <h1 class="hero-title">
-      <span class="word">Machine</span>
-      <span class="word">Learning</span>
-      <span class="word">Society</span>
-    </h1>
-    <p class="hero-subtitle">Rochester Institute of Technology</p>
-    <a onclick="showLoginPrompt()" class="btn">
-      <span>Join the Community</span>
-      <div class="btn-glow"></div>
-    </a>
-  </div>
+    <div class="hero-overlay">
+        <h1 class="hero-title">
+            <span class="word">Machine</span>
+            <span class="word">Learning</span>
+            <span class="word">Society</span>
+        </h1>
+        <p class="hero-subtitle">Rochester Institute of Technology</p>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'student_dashboard' %}" class="btn">
+                <span>Go to Dashboard</span>
+                <div class="btn-glow"></div>
+            </a>
+        {% else %}
+            <a onclick="showSignupPrompt()" class="btn" style="cursor:pointer;">
+                <span>Join the Community</span>
+                <div class="btn-glow"></div>
+            </a>
+        {% endif %}
+    </div>
   <div class="scroll-indicator">
     <div class="scroll-arrow"></div>
   </div>
@@ -96,21 +103,24 @@
       <span>Prepare for careers in AI & Data Science</span>
     </li>
   </ul>
-
-  <a href="login.html" class="btn big">
+    {% if not request.user.is_authenticated %}
+  <a onclick="showLoginPrompt()" class="btn big">
     <span>Become a Member</span>
     <div class="btn-glow"></div>
   </a>
+    {% endif %}
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>© Machine Learning Society — Rochester Institute of Technology</p>
+    <div class="footer-inner">
+        <p>© {{ now.year }} Machine Learning Society — Rochester Institute of Technology</p>
+        <div class="footer-links">
+            <a href="/#about">About</a>
+            <a href="/#activities">Activities</a>
+            <a href="{% url 'meet-the-team' %}">Team</a>
+        </div>
+    </div>
 </footer>
-
-<script src="{% static "script.js" %}"></script>
-
-</body>
-</html>
 
 {% endblock content %}
