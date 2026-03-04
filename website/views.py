@@ -134,3 +134,4 @@ def leave_team(request: WSGIRequest, team_id: int):
         return HttpResponse(json.dumps({"message": "Left Team Successfully","error":10}))
     except:
         return HttpResponse(json.dumps({"message": "Team Not Found","error":30}))
+

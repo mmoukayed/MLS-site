@@ -28,7 +28,7 @@ urlpatterns = [
     path('team/',include('website.teamUrls')),
     # include("team/",urls.teamUrls)
     path('',views.home),
-    path("auth/", include("accounts.urls")),
+    path("auth/", include("accounts.urls"), name="accounts"),
     
     path("dashboard/", views.student_dashboard, name="student_dashboard")
 ]
