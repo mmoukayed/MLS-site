@@ -25,7 +25,25 @@ def meet_the_team(request):
 
 @login_required(login_url="/")
 def student_dashboard(request: WSGIRequest):
-    return render(request, "student-dashboard.html")
+    if not request.user.is_authenticated:
+        # return HttpResponse(json.dumps({"message": "Not Logged In","error":20}),status=401)
+        return redirect("/")
+    joined_teams = []
+    owned_teams = []
+    invited_teams = []
+    pending_teams = []
+    for team in models.Team.objects.all():
+        if team.team_members.contains(request.user):
+            joined_teams.append(team)
+        if team.team_leaders.contains(request.user):
+            owned_teams.append(team)
+        if team.invited_members.contains(request.user):
+            invited_teams.append(team)
+        if team.pending_members.contains(request.user):
+            pending_teams.append(team)    
+    print(len(invited_teams))
+    return render(request, "student-dashboard.html",{"joined_teams": joined_teams, "owned_teams": owned_teams, "pending_teams": pending_teams, "invited_teams": invited_teams, "events": models.Event.objects.all()})
+
 
 
 @login_required(login_url="/")
@@ -35,7 +53,14 @@ def student_events(request: WSGIRequest):
 
 @login_required(login_url="/")
 def student_teams(request: WSGIRequest):
-    return render(request, "student-teams.html")
+    joined_teams = []
+    pending_teams = []
+    for team in models.Team.objects.all():
+        if request.user in team.team_leaders.all() or request.user in team.team_members.all():
+            joined_teams.append(team)
+        elif request.user in team.pending_members.all():
+            pending_teams.append(team)
+    return render(request, "student-teams.html", {"teams": models.Team.objects.all(), "joined_teams": joined_teams, "pending_teams": pending_teams})
 
 
 @login_required(login_url="/")

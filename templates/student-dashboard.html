@@ -12,17 +12,18 @@
   </div>
 
   <!-- Invitations Alert -->
+   {% if invited_teams|length > 0 %}
   <div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <strong>You have pending team invitations!</strong>
-      <p style="margin-top: 0.25rem; opacity: 0.9;">Review and accept invitations to join teams</p>
+      <strong>You have {{invited_teams|length}} team invitation{% if invited_teams|length != 1 %}s{% endif %}!</strong>
+      <p style="margin-top: 0.25rem; opacity: 0.9;">Review and accept invitation{% if invited_teams|length != 1 %}s{% endif %} to join team{% if invited_teams|length != 1 %}s{% endif %}</p>
     </div>
-    <a href="{% url 'website:teams' %}" class="btn btn-small">
-      <span>View Teams</span>
+    <button class="btn btn-small btn-primary">
+      <span>View Invitation{% if invited_teams|length != 1 %}s{% endif %}</span>
       <div class="btn-glow"></div>
     </a>
   </div>
-
+  {% endif %}
   <!-- Dashboard Grid -->
   <div class="dashboard-grid">
     <!-- My Teams Card -->
@@ -31,34 +32,46 @@
         <h2 class="dashboard-card-title">My Teams</h2>
         <span class="badge badge-primary">3 Teams</span>
       </div>
-
       <ul class="item-list">
+        {% for team in owned_teams %}
         <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=1 %}'">
           <div class="item-header">
-            <span class="item-title">ML Research Group</span>
+            <span class="item-title">{{team.name}}</span>
             <span class="badge badge-warning">Owner</span>
           </div>
-          <div class="item-meta">5 members</div>
+          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
         </li>
-
+        {% endfor %}
+        {% for team in invited_teams %}
+        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=1 %}'">
+          <div class="item-header">
+            <span class="item-title">{{team.name}}</span>
+            <span class="badge badge-success">Invited</span>
+          </div>
+          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
+        </li>
+        {% endfor %}
+        {% for team in joined_teams %}
         <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=2 %}'">
           <div class="item-header">
-            <span class="item-title">AI Ethics Committee</span>
+            <span class="item-title">{{team.name}}</span>
             <span class="badge badge-primary">Member</span>
           </div>
-          <div class="item-meta">8 members</div>
+          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
         </li>
-
+        {% endfor %}
+        {% for team in pending_teams %}
         <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=3 %}'">
           <div class="item-header">
-            <span class="item-title">Hackathon Warriors</span>
-            <span class="badge badge-primary">Member</span>
+            <span class="item-title">{{team.name}}</span>
+            <span class="badge badge-warning">Pending</span>
           </div>
-          <div class="item-meta">4 members</div>
+          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
         </li>
+        {% endfor %}
       </ul>
 
-      <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="{% url 'website:teams' %}">
+      <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href = '{% url 'website:teams' %}'">
         <span>Browse All Teams</span>
         <div class="btn-glow"></div>
       </button>
@@ -71,11 +84,12 @@
       </div>
 
       <ul class="item-list">
+        {% for event in events %}
         <li class="item">
           <div class="item-header">
-            <span class="item-title">Introduction to Neural Networks</span>
+            <span class="item-title">{{event.title}}</span>
           </div>
-          <div class="item-meta">Friday, Feb 21, 2026 • 6:00 PM</div>
+          <div class="item-meta">{{event.date|date:"l, M jS, Y"}} • {{event.start_time}} PM</div>
           <div style="margin-top: 0.75rem;">
             <button class="btn btn-small btn-primary">
               <span>Register</span>
@@ -83,7 +97,7 @@
             </button>
           </div>
         </li>
-
+        {% endfor %}
         <li class="item">
           <div class="item-header">
             <span class="item-title">Spring Hackathon 2026</span>
@@ -147,7 +161,7 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="{% static "script.js" %}"></script>
 <script>
   // Add scroll animation observer
   const observerOptions = {

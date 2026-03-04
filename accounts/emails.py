@@ -76,7 +76,6 @@ Valid for 5 minutes.
 </body>
 </html>
 """
-
     msg = EmailMultiAlternatives(
         subject=subject,
         body=text_content,

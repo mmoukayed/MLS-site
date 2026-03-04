@@ -40,7 +40,7 @@ class MemberAdmin(UserAdmin):
 
     add_fieldsets = (
         (
-            None,
+            "Details",
             {
                 "classes": ("wide",),
                 "fields": (
@@ -49,6 +49,19 @@ class MemberAdmin(UserAdmin):
                     "password2",
                     "is_staff",
                     "is_superuser",
+                ),
+            },
+        ),(
+            "Personal Info",
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "date_of_birth",
+                    "gender",
+                    "major",
+                    "nationality",
                 ),
             },
         ),

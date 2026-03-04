@@ -437,6 +437,39 @@ span {
   }
 }
 
+.message {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  display: none;
+  z-index: 1051;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+}
+.message.success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  display: block;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  display: block;
+}
+
+.message.info {
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  color: #0c5460;
+  display: block;
+}
+
 /* FADE IN ANIMATION */
 .fade-in {
   opacity: 0;
