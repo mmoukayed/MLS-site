@@ -5,37 +5,36 @@
 
 <div class="dashboard-content">
   <div style="margin-bottom: 1rem;">
-    <a href="teams.html" style="color: var(--text-secondary); text-decoration: none;">← Back to Teams</a>
+    <a href="{% url 'website:teams' %}" style="color: var(--text-secondary);">← Back to Teams</a>
   </div>
 
   <div class="dashboard-card fade-in visible">
-    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <h1 style="font-family: 'Syne', sans-serif; font-size: 2.5rem; margin-bottom: 0.5rem;">ML Research Group</h1>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-          Conducting research on deep learning applications in computer vision
-        </p>
-        <div style="display: flex; gap: 0.75rem;">
+        <h1 style="font-family: 'Syne', sans-serif; font-size: 2.2rem; margin-bottom: 0.5rem;">ML Research Group</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Conducting research on deep learning applications in computer vision.</p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <span class="badge badge-primary">5 Members</span>
           <span class="badge badge-warning">Owner</span>
         </div>
       </div>
-      <div style="display: flex; gap: 0.75rem;">
-        <button class="btn btn-primary">
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn" onclick="inviteModal()">
           <span>Invite Members</span>
           <div class="btn-glow"></div>
         </button>
-        <button class="btn btn-danger">Leave Team</button>
+        <button class="btn btn-danger" onclick="leaveTeam()">Leave Team</button>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab active">Members</button>
-      <button class="tab">Join Requests</button>
-      <button class="tab">Settings</button>
+      <button class="tab active" onclick="switchTab('members', this)">Members</button>
+      <button class="tab" onclick="switchTab('requests', this)">Join Requests</button>
+      <button class="tab" onclick="switchTab('settings', this)">Settings</button>
     </div>
 
-    <div style="margin-top: 2rem;">
+    <!-- Members Tab -->
+    <div id="tab-members" style="margin-top: 2rem;">
       <h3 style="margin-bottom: 1rem;">Team Members</h3>
       <ul class="item-list">
         <li class="item">
@@ -67,9 +66,62 @@
         </li>
       </ul>
     </div>
+
+    <!-- Join Requests Tab -->
+    <div id="tab-requests" style="margin-top: 2rem; display: none;">
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>No pending requests</h3>
+        <p>New join requests will appear here.</p>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="tab-settings" style="margin-top: 2rem; display: none;">
+      <div class="form-group">
+        <label class="form-label">Team Name</label>
+        <input type="text" class="form-input" value="ML Research Group">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" rows="4">Conducting research on deep learning applications in computer vision.</textarea>
+      </div>
+      <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <button class="btn" style="flex:1;">
+          <span>Save Changes</span>
+          <div class="btn-glow"></div>
+        </button>
+        <button class="btn btn-danger" onclick="deleteTeam()">Delete Team</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+  function switchTab(tab, btn) {
+    ['members', 'requests', 'settings'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = 'none';
+    });
+    document.getElementById('tab-' + tab).style.display = 'block';
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function leaveTeam() {
+    if (!confirm('Are you sure you want to leave this team?')) return;
+    // POST to /team/<id>/leave/
+  }
+
+  function deleteTeam() {
+    if (!confirm('Permanently delete this team? This cannot be undone.')) return;
+    // DELETE to /team/<id>/delete/
+  }
+
+  function inviteModal() {
+    alert('Invite feature coming soon!');
+  }
+</script>
+{% endblock extra_scripts %}
+
+{% endblock content %}
