@@ -11,80 +11,142 @@
   <div class="dashboard-card fade-in visible">
     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <h1 style="font-family: 'Syne', sans-serif; font-size: 2.2rem; margin-bottom: 0.5rem;">ML Research Group</h1>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Conducting research on deep learning applications in computer vision.</p>
+        <h1 style="font-family: 'Syne', sans-serif; font-size: 2.2rem; margin-bottom: 0.5rem;">{{ team.name }}</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">{{team.description}}</p>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <span class="badge badge-primary">5 Members</span>
+          <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
+          {% if request.user == team.creator %}
+          <span class="badge badge-warning">Creator</span>
+          {% elif request.user in team.team_leaders.all %}
           <span class="badge badge-warning">Owner</span>
+          {% elif request.user in team.pending_members.all %}
+          <span class="badge badge-warning">Pending Invite</span>
+          {% elif request.user in team.invited_members.all %}
+          <span class="badge badge-success">Invited</span>
+          {% elif request.user in team.team_members.all %}
+          <span class="badge badge-primary">Member</span>
+          
+          {% endif %}
+
         </div>
       </div>
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        {% if request.user in team.pending_members.all %}
+        <button class="btn btn-outline" onclick="">Cancel Join Request</button>
+        {% elif request.user in team.invited_members.all %}
+        <button class="btn btn-success" onclick="">Accept Invite</button>
+        <button class="btn btn-danger" onclick="">Reject Invite</button>
+        {% elif op %}
         <button class="btn" onclick="inviteModal()">
           <span>Invite Members</span>
           <div class="btn-glow"></div>
         </button>
+        {% elif request.user in team.team_members.all %}
+        {% else %}
+        <button class="btn btn-outline" onclick="">Request To Join</button>
+        {% endif %}
+        {% if request.user in team.team_members.all or request.user in team.team_leaders.all %}
         <button class="btn btn-danger" onclick="leaveTeam()">Leave Team</button>
+        {% endif %}
       </div>
     </div>
 
     <div class="tabs">
       <button class="tab active" onclick="switchTab('members', this)">Members</button>
+      {% if op %}
       <button class="tab" onclick="switchTab('requests', this)">Join Requests</button>
       <button class="tab" onclick="switchTab('settings', this)">Settings</button>
+      {% endif %}
     </div>
 
     <!-- Members Tab -->
     <div id="tab-members" style="margin-top: 2rem;">
       <h3 style="margin-bottom: 1rem;">Team Members</h3>
       <ul class="item-list">
+        
         <li class="item">
           <div class="item-header">
             <div>
-              <span class="item-title">Sarah Johnson</span>
-              <div class="item-meta">sarah.johnson@rit.edu • Computer Science '26</div>
+              <span class="item-title">{{ team.creator.get_full_name }}</span>
+              <div class="item-meta">{{team.creator.email}} • {{team.major.name}} • {{team.creator.graduation_year}}</div>
+            </div>
+            <span class="badge badge-warning">Creator</span>
+          </div>
+        </li>
+        {% for leader in team.team_leaders.all %}
+        <li class="item">
+          <div class="item-header">
+            <div>
+              <span class="item-title">{{ leader.get_full_name }}</span>
+              <div class="item-meta">{{ leader.email }} • {{ leader.major.name }} • {{leader.graduation_year}}</div>
             </div>
             <span class="badge badge-warning">Owner</span>
           </div>
         </li>
+        {% endfor %}
+        {% for member in team.team_members.all %}
         <li class="item">
           <div class="item-header">
             <div>
-              <span class="item-title">John Doe</span>
-              <div class="item-meta">john.doe@rit.edu • Data Science '26</div>
+              <span class="item-title">{{ member.get_full_name }}</span>
+              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
             </div>
             <span class="badge badge-primary">Member</span>
           </div>
         </li>
+        {% endfor %}
+        {% if op %}
+        {% for member in team.invited_members.all %}
         <li class="item">
           <div class="item-header">
             <div>
-              <span class="item-title">Emily Zhang</span>
-              <div class="item-meta">emily.zhang@rit.edu • AI Engineering '25</div>
+              <span class="item-title">{{ member.get_full_name }}</span>
+              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
             </div>
-            <span class="badge badge-primary">Member</span>
+            <span class="badge badge-success">Invited</span>
           </div>
         </li>
+        {% endfor %}
+        {% endif %}
       </ul>
     </div>
 
     <!-- Join Requests Tab -->
     <div id="tab-requests" style="margin-top: 2rem; display: none;">
-      <div class="empty-state">
-        <div class="empty-state-icon">📭</div>
-        <h3>No pending requests</h3>
-        <p>New join requests will appear here.</p>
-      </div>
+      <ul class="item-list">
+        {% for member in team.pending_members.all %}
+        <li class="item">
+          <div class="item-header">
+            <div>
+              <span class="item-title">{{ member.get_full_name }}</span>
+              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
+            </div>
+            <span class="badge badge-warning">Pending</span>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+              <button class="btn btn-success" onclick="">Accept</button>
+              <button class="btn btn-danger" onclick="">Reject</button>
+            </div>
+          </div>
+        </li>
+        {% empty %}
+        <div class="empty-state">
+          <div class="empty-state-icon">📭</div>
+          <h3>No pending requests</h3>
+          <p>New join requests will appear here.</p>
+        </div>
+        {% endfor %}
+      </ul>
     </div>
 
     <!-- Settings Tab -->
     <div id="tab-settings" style="margin-top: 2rem; display: none;">
       <div class="form-group">
         <label class="form-label">Team Name</label>
-        <input type="text" class="form-input" value="ML Research Group">
+        <input type="text" class="form-input" value="{{team.name}}">
       </div>
       <div class="form-group">
         <label class="form-label">Description</label>
-        <textarea class="form-input" rows="4">Conducting research on deep learning applications in computer vision.</textarea>
+        <textarea class="form-input" rows="4">{{team.description}}</textarea>
       </div>
       <div style="display: flex; gap: 1rem; margin-top: 1rem;">
         <button class="btn" style="flex:1;">

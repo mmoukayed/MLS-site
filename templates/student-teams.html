@@ -29,23 +29,27 @@
         {{team.description}}
       </p>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count != 1 %}s{% endif %}</span>
+        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
         {% if request.user in team.pending_members.all %}
         <span class="badge badge-warning">Pending Invite</span>
+        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.invited_members.all %}
+        <span class="badge badge-success">Invited</span>
+        {% elif request.user in team.team_members.all %}
+        <span class="badge badge-primary">Member</span>
+        
         {% endif %}
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <span style="color: var(--text-secondary); font-size: 0.875rem;">Created by {{team.creator.get_full_name}}</span>
       </div>
-      <div style="display: flex; justify-content: center; align-items: center; gap: 5px; font-size: 15px;">
-        {% if request.user in team.team_leaders.all or request.user in team.team_members.all or request.user in team.pending_members.all %}
+      <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-direction: column;">
         <a href="{% url 'website:team-detail' team_id=team.pk %}" class="btn" style="width: 100%; display: flex;">
           <span>View Team</span>
           <div class="btn-glow"></div>
         </a>
-          {% if request.user in team.pending_members.all %}
-          <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Cancel Request</button>
-          {% endif %}
+        {% if request.user in team.team_leaders.all or request.user in team.team_members.all or request.user in team.pending_members.all or request.user in team.invited_members.all or request.user == team.creator %}
         {% else %}
         <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Request to Join</button>
         {% endif %}
@@ -70,17 +74,31 @@
         {{team.description}}
       </p>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count != 1 %}s{% endif %}</span>
+        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
+        {% if request.user in team.pending_members.all %}
+        <span class="badge badge-warning">Pending Invite</span>
+        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.invited_members.all %}
+        <span class="badge badge-success">Invited</span>
+        {% elif request.user in team.team_members.all %}
+        <span class="badge badge-primary">Member</span>
+        
+        {% endif %}
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <span style="color: var(--text-secondary); font-size: 0.875rem;">Created by {{team.creator.get_full_name}}</span>
       </div>
-      {% if request.user in team.team_leaders.all or request.user in team.team_members.all or request.user in team.pending_members.all %}
-      <a href="{% url 'website:team-detail' team_id=team.pk %}" class="btn" style="width: 100%; display: flex;">
-        <span>View Team</span>
-        <div class="btn-glow"></div>
-      </a>
-      {% else %}
-      <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Request to Join</button>
-      {% endif %}
+      <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-direction: column;">
+        <a href="{% url 'website:team-detail' team_id=team.pk %}" class="btn" style="width: 100%; display: flex;">
+          <span>View Team</span>
+          <div class="btn-glow"></div>
+        </a>
+        {% if request.user in team.team_leaders.all or request.user in team.team_members.all or request.user in team.pending_members.all or request.user in team.invited_members.all or request.user == team.creator %}
+        {% else %}
+        <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Request to Join</button>
+        {% endif %}
+      </div>
     </div>
     {% empty %}
     <div class="empty-state" style="grid-column: 1/-1;">
@@ -93,26 +111,38 @@
 
   <!-- Invitations (hidden by default) -->
   <div id="tab-invites" style="display: none;">
-    {% for team in pending_teams %}
+    {% for team in invited_teams %}
     <div class="dashboard-card fade-in visible">
       <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">{{team.name}}</h3>
       <p style="color: var(--text-secondary); margin-bottom: 1rem;">
         {{team.description}}
       </p>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count != 1 %}s{% endif %}</span>
+        <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
+        {% if request.user in team.pending_members.all %}
+        <span class="badge badge-warning">Pending Invite</span>
+        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.invited_members.all %}
+        <span class="badge badge-success">Invited</span>
+        {% elif request.user in team.team_members.all %}
+        <span class="badge badge-primary">Member</span>
+        
+        {% endif %}
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <span style="color: var(--text-secondary); font-size: 0.875rem;">Created by {{team.creator.get_full_name}}</span>
       </div>
       <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
-        {% if request.user in team.team_leaders.all or request.user in team.team_members.all or request.user in team.pending_members.all %}
         <a href="{% url 'website:team-detail' team_id=team.pk %}" class="btn" style="width: 100%; display: flex;">
           <span>View Team</span>
           <div class="btn-glow"></div>
         </a>
-        <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Cancel Request</button>
-        {% else %}
-        <button class="btn btn-secondary" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Request to Join</button>
-        {% endif %}
+      </div>
+      <br>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+        <button class="btn btn-success" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Accept</button>
+        <button class="btn btn-danger" style="width: 100%;" onclick="joinTeam({{team.pk}}, this)">Reject</button>
       </div>
     </div>
     {% empty %}

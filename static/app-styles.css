@@ -159,7 +159,9 @@
 }
 .btn-secondary:hover { background: var(--card-bg); border-color: var(--accent); }
 .btn-danger  { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; opacity: 1; animation: none; }
-.btn-danger:hover  { box-shadow: 0 8px 24px rgba(239,68,68,0.3); }
+.btn-danger:hover  { box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3); }
+.btn-success  { background: linear-gradient(135deg, #38d973, #16a34a); color: #fff; opacity: 1; animation: none; }
+.btn-success:hover  { box-shadow: 0 8px 24px rgba(56, 217, 115, 0.302); }
 .btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); opacity: 1; animation: none; }
 .btn-outline:hover { background: var(--accent); color: #fff; }
 

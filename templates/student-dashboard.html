@@ -33,40 +33,23 @@
         <span class="badge badge-primary">3 Teams</span>
       </div>
       <ul class="item-list">
-        {% for team in owned_teams %}
+        {% for team in teams %}
         <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=1 %}'">
           <div class="item-header">
             <span class="item-title">{{team.name}}</span>
+            {% if request.user == team.creator %}
+            <span class="badge badge-warning">Creator</span>
+            {% elif request.user in team.team_leaders.all %}
             <span class="badge badge-warning">Owner</span>
-          </div>
-          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
-        </li>
-        {% endfor %}
-        {% for team in invited_teams %}
-        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=1 %}'">
-          <div class="item-header">
-            <span class="item-title">{{team.name}}</span>
+            {% elif request.user in team.invited_members.all %}
             <span class="badge badge-success">Invited</span>
-          </div>
-          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
-        </li>
-        {% endfor %}
-        {% for team in joined_teams %}
-        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=2 %}'">
-          <div class="item-header">
-            <span class="item-title">{{team.name}}</span>
+            {% elif request.user in team.team_members.all %}
             <span class="badge badge-primary">Member</span>
-          </div>
-          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
-        </li>
-        {% endfor %}
-        {% for team in pending_teams %}
-        <li class="item" onclick="window.location.href='{% url 'website:team-detail' team_id=3 %}'">
-          <div class="item-header">
-            <span class="item-title">{{team.name}}</span>
+            {% elif request.user in team.pending_members.all %}
             <span class="badge badge-warning">Pending</span>
+            {% endif %}
           </div>
-          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count != 1 %}s{% endif %}</div>
+          <div class="item-meta">{{team.team_members.count|add:team.team_leaders.count}} member{% if team.team_members.count|add:team.team_leaders.countount != 1 %}s{% endif %}</div>
         </li>
         {% endfor %}
       </ul>
