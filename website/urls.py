@@ -11,4 +11,5 @@ urlpatterns = [
     path("teams/",          views.student_teams,   name="teams"),
     path("teams/<int:team_id>/", views.team_detail, name="team-detail"),
     path("profile/",        views.student_profile, name="profile"),
+    path("finish-profile/", views.finish_profile, name="finish_profile")
 ]
