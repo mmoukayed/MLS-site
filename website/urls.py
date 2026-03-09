@@ -16,4 +16,7 @@ path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("finish-profile/", views.finish_profile, name="finish_profile"),
     path("edit-role/", views.edit_role, name="edit_role"),
     path("delete-member/", views.delete_member, name="delete_member"),
+    path("create-event/", views.create_event, name="create_event"),
+path('edit-event/',   views.edit_event,   name='edit_event'),
+path('delete-event/', views.delete_event, name='delete_event'),
 ]
