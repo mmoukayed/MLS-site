@@ -1,16 +1,20 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.http import JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+from django.contrib.auth import get_user_model
+
+
 
 from website import models
 from accounts.models import Member, Major
 from django_countries import countries
 
-
+User = get_user_model()
 
 # ════════════════════════════════════════════════════════════
 #  PAGE VIEWS
@@ -23,6 +27,13 @@ def home(request):
 
 def meet_the_team(request):
     return render(request, "meettheteam.html")
+
+def admin_dashboard(request):
+    members = Member.objects.select_related("major").all()
+
+    return render(request, "admin-dashboard.html", {
+        "members": members
+    })
 
 
 @login_required(login_url="/")
@@ -66,7 +77,10 @@ def team_detail(request: WSGIRequest, team_id: int):
 
 @login_required(login_url="/")
 def student_profile(request: WSGIRequest):
-    return render(request, "student-profile.html")
+    is_admin = request.GET.get("admin") == "true"
+    return render(request, "student-profile.html",{
+        "is_admin": is_admin
+    })
 
 
 # ════════════════════════════════════════════════════════════
@@ -210,3 +224,31 @@ def finish_profile(request):
         "majors": Major.objects.all(),
         "nationalities": countries,
     })
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_role(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        is_staff = request.POST.get("is_staff") == "True"
+        try:
+            user = Member.objects.get(email=email)
+            user.is_staff = is_staff
+            user.save()
+        except Member.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_member(request):
+
+    if request.method == "POST":
+
+        email = request.POST.get("email")
+
+        try:
+            user = Member.objects.get(email=email)
+            user.delete()
+        except Member.DoesNotExist:
+            pass
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
