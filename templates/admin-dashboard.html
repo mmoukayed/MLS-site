@@ -44,7 +44,7 @@
                 <div class="dashboard-card fade-in visible">
                     <h3 class="dashboard-card-title">Quick Actions</h3>
                     <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                        <button class="btn btn-primary" style="width: 100%;" onclick="showAdminTab('events', event)">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openEventPopup()">
                             <span>+ Create Event</span>
                             <div class="btn-glow"></div>
                         </button>
@@ -125,7 +125,91 @@
             </div>
         </div>
 
+        <!-- Teams Tab (hidden by default) -->
+        <!-- Teams Tab -->
+        <div id="teams-tab" style="display: none;">
+            <div class="dashboard-card fade-in visible">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h3 class="dashboard-card-title">All Teams</h3>
+                    <input type="text" class="form-input" id="team-search"
+                           placeholder="Search teams..." style="max-width:300px;"
+                           onkeyup="filterTeams()">
+                </div>
 
+                <!-- Filter pills -->
+                <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem;">
+                    <button class="btn btn-small btn-secondary active-filter"
+                            onclick="filterTeamStatus('all', this)">All
+                    </button>
+                    <button class="btn btn-small btn-secondary"
+                            onclick="filterTeamStatus('active', this)">Has Members
+                    </button>
+                    <button class="btn btn-small btn-secondary"
+                            onclick="filterTeamStatus('empty', this)">Empty
+                    </button>
+                </div>
+
+                <ul class="item-list" id="teams-list">
+                    {% for t in teams %}
+                        <li class="item team-item"
+                            data-members="{{ t.member_count }}"
+                            data-search="{{ t.obj.name|lower }} {{ t.obj.description|lower }}">
+                            <div class="item-header">
+
+                                <div class="item-info"
+                                     onclick="openViewTeam(
+                                             '{{ t.obj.name|escapejs }}',
+                                             `{{ t.obj.description|escapejs }}`,
+                                             {{ t.member_count }},
+                                             {{ t.leader_count }},
+                                             '{{ t.leaders_str|escapejs }}',
+                                             {{ t.leaders_json }},
+                                             {{ t.members_json }}
+                                             )"
+                                     style="cursor:pointer; min-width:0; flex:1;">
+                                    <span class="item-title">{{ t.obj.name }}</span>
+                                    <div class="item-meta">
+                                        {{ t.member_count }} member{{ t.member_count|pluralize }}
+                                        • Led by: {{ t.leaders_str }}
+                                    </div>
+                                </div>
+
+                                <div class="item-actions"
+                                     style="display:flex; gap:0.5rem; flex-shrink:0; align-items:center;">
+                <span class="badge badge-primary">
+                    {% if t.member_count > 0 %}Active{% else %}Empty{% endif %}
+                </span>
+                                    <button class="btn btn-small btn-secondary"
+                                            onclick="openEditTeam(
+                                                    '{{ t.obj.id }}',
+                                                    '{{ t.obj.name|escapejs }}',
+                                                    `{{ t.obj.description|escapejs }}`,
+                                                    {{ t.members_json }},
+                                                    {{ t.leaders_json }}
+                                                    )">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-small btn-danger"
+                                            onclick="openDeleteTeam('{{ t.obj.id }}', '{{ t.obj.name|escapejs }}')">
+                                        Delete
+                                    </button>
+                                </div>
+
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="item">
+                            <div class="item-header">
+                                <span class="item-title">No teams found.</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- Events tab (hidden by default) -->
         <div id="events-tab" style="display: none;">
             <div class="dashboard-card fade-in visible">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -461,12 +545,144 @@
         <div class="backdrop-close" onclick="closeDeleteEvent()"></div>
     </div>
 
+    <!-- View Team Popup -->
+    <div class="account-popup-bg" id="view-team-bg" hidden>
+        <div class="account-popup wide" id="view-team-popup" hidden>
+            <div class="popup-header">
+                <h1 id="vt-name"></h1>
+                <p class="popup-sub" id="vt-leaders"></p>
+            </div>
+            <div class="columnizer">
+                <p id="vt-description" style="color:var(--text-secondary); text-align:center;"></p>
+
+                <div class="event-grid">
+                    <div>
+                        <strong>Members (<span id="vt-members"></span>)</strong>
+                        <ul id="vt-members-list" style="margin-top:0.5rem; padding:0; list-style:none;
+                        display:flex; flex-direction:column; gap:0.35rem;"></ul>
+                    </div>
+                    <div>
+                        <strong>Leaders (<span id="vt-leader-count"></span>)</strong>
+                        <ul id="vt-leaders-list" style="margin-top:0.5rem; padding:0; list-style:none;
+                        display:flex; flex-direction:column; gap:0.35rem;"></ul>
+                    </div>
+                </div>
+
+                <button class="login-btn btn-secondary" onclick="closeViewTeam()">Close</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeViewTeam()"></div>
+    </div>
+
+    <!-- Edit Team Popup -->
+    <div class="account-popup-bg" id="edit-team-bg" hidden>
+        <form class="account-popup wide" id="edit-team-popup" hidden
+              method="POST" action="{% url 'website:edit_team' %}">
+            <div class="popup-header">
+                <h1>Edit Team</h1>
+                <p class="popup-sub">Update team details, members and leaders</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <input type="hidden" name="team_id" id="edit-team-id">
+
+                <label>
+                    <input class="form-input" name="name" id="edit-team-name"
+                           placeholder="Team Name" required>
+                </label>
+                <label>
+                <textarea class="form-input" name="description" id="edit-team-desc"
+                          placeholder="Description" rows="3"></textarea>
+                </label>
+
+                <hr style="border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+                <div style="display: flex;justify-content: space-between;gap: 3vw">
+                    <!-- Members picker -->
+                    <div>
+                        <strong style="color:var(--text-primary);">Members</strong>
+                        <div style="position:relative; margin-top:0.5rem;">
+                            <input class="form-input" id="member-search-input"
+                                   placeholder="Search by name or email..."
+                                   autocomplete="off"
+                                   oninput="liveSearch('member')">
+                            <ul id="member-search-results"
+                                style="display:none; position:absolute; top:100%; left:0; right:0;
+                               background:var(--card-bg); border:1px solid var(--neural-line);
+                               border-radius:8px; z-index:100; max-height:180px; overflow-y:auto;
+                               padding:0.25rem 0; margin:0; list-style:none; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                            </ul>
+                        </div>
+                        <!-- selected members appear here -->
+                        <div id="selected-members"
+                             style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem;"></div>
+                        <!-- hidden inputs submitted with form -->
+                        <div id="member-hidden-inputs"></div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+
+                    <!-- Leaders picker -->
+                    <div>
+                        <strong style="color:var(--text-primary);">Leaders</strong>
+                        <div style="position:relative; margin-top:0.5rem;">
+                            <input class="form-input" id="leader-search-input"
+                                   placeholder="Search by name or email..."
+                                   autocomplete="off"
+                                   oninput="liveSearch('leader')">
+                            <ul id="leader-search-results"
+                                style="display:none; position:absolute; top:100%; left:0; right:0;
+                               background:var(--card-bg); border:1px solid var(--neural-line);
+                               border-radius:8px; z-index:100; max-height:180px; overflow-y:auto;
+                               padding:0.25rem 0; margin:0; list-style:none; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                            </ul>
+                        </div>
+                        <div id="selected-leaders"
+                             style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem;"></div>
+                        <div id="leader-hidden-inputs"></div>
+                    </div>
+                </div>
+
+                <button class="login-btn primary-btn" type="submit">
+                    Save Changes
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEditTeam()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEditTeam()"></div>
+    </div>
+
+    <!-- Delete Team Popup -->
+    <div class="account-popup-bg" id="delete-team-bg" hidden>
+        <form class="account-popup" id="delete-team-popup" hidden
+              onsubmit="submitDeleteTeam(event)"
+              method="POST" action="{% url 'website:admin_delete_team' %}">
+            <div class="popup-header">
+                <h2>Delete Team</h2>
+                <p class="popup-sub">Delete <strong id="delete-team-title"></strong>?
+                    This cannot be undone.</p>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="team_id" id="delete-team-id">
+            <div class="columnizer">
+                <button class="login-btn primary-btn" type="submit">Delete Team</button>
+                <button type="button" class="login-btn btn-secondary"
+                        onclick="closeDeleteTeam()">Cancel
+                </button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeDeleteTeam()"></div>
+    </div>
+
     <script src="{% static "script.js" %}"></script>
     <script>
         function showAdminTab(tab, e) {
             // Hide all tabs
             document.getElementById('overview-tab').style.display = 'none';
             document.getElementById('users-tab').style.display = 'none';
+            document.getElementById('teams-tab').style.display = 'none';
             document.getElementById('events-tab').style.display = 'none';
             document.getElementById('cms-tab').style.display = 'none';
 
@@ -665,6 +881,224 @@
                 if (filter === 'past') show = date < today;
 
                 item.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        /* ── TEAM SEARCH + FILTER ── */
+        function filterTeams() {
+            const query = document.getElementById("team-search").value.toLowerCase();
+            document.querySelectorAll("#teams-tab .team-item").forEach(item => {
+                item.style.display = item.dataset.search.includes(query) ? "block" : "none";
+            });
+        }
+
+        function filterTeamStatus(filter, btn) {
+            document.querySelectorAll('#teams-tab .active-filter').forEach(b => b.classList.remove('active-filter'));
+            btn.classList.add('active-filter');
+            document.querySelectorAll("#teams-tab .team-item").forEach(item => {
+                const count = parseInt(item.dataset.members);
+                let show = true;
+                if (filter === 'active') show = count > 0;
+                if (filter === 'empty') show = count === 0;
+                item.style.display = show ? "block" : "none";
+            });
+        }
+
+        /* ── VIEW TEAM ── */
+        function openViewTeam(name, description, memberCount, leaderCount, leadersStr, leadersList, membersList) {
+            document.getElementById("vt-name").textContent = name;
+            document.getElementById("vt-description").textContent = description || "No description provided.";
+            document.getElementById("vt-members").textContent = memberCount;
+            document.getElementById("vt-leader-count").textContent = leaderCount;
+            document.getElementById("vt-leaders").textContent = "Led by: " + (leadersStr || "None");
+
+            const memberUl = document.getElementById("vt-members-list");
+            memberUl.innerHTML = membersList.length
+                ? membersList.map(m => `
+            <li style="background:var(--card-bg); padding:0.4rem 0.75rem;
+                       border-radius:8px; font-size:0.9rem; color:var(--text-primary);">
+                 ${m}
+            </li>`).join("")
+                : `<li style="color:var(--text-secondary); font-size:0.85rem;">No members yet</li>`;
+
+            const leaderUl = document.getElementById("vt-leaders-list");
+            leaderUl.innerHTML = leadersList.length
+                ? leadersList.map(l => `
+            <li style="background:var(--card-bg); padding:0.4rem 0.75rem;
+                       border-radius:8px; font-size:0.9rem; color:var(--accent);">
+                 ${l}
+            </li>`).join("")
+                : `<li style="color:var(--text-secondary); font-size:0.85rem;">No leaders assigned</li>`;
+
+            document.getElementById("view-team-bg").hidden = false;
+            document.getElementById("view-team-popup").hidden = false;
+        }
+
+        function closeViewTeam() {
+            document.getElementById("view-team-bg").hidden = true;
+            document.getElementById("view-team-popup").hidden = true;
+        }
+
+        /* ── EDIT TEAM ── */
+        /* ── EDIT TEAM ── */
+
+        // tracks currently selected {id, name, email} for each role
+        const editTeamState = {member: {}, leader: {}};
+        let searchTimeout = null;
+
+        function openEditTeam(id, name, description, membersJson, leadersJson) {
+            document.getElementById("edit-team-id").value = id;
+            document.getElementById("edit-team-name").value = name;
+            document.getElementById("edit-team-desc").value = description;
+
+            // reset state
+            editTeamState.member = {};
+            editTeamState.leader = {};
+
+            // pre-populate existing members and leaders
+            membersJson.forEach(m => addPerson('member', m.id, m.name, m.email));
+            leadersJson.forEach(l => addPerson('leader', l.id, l.name, l.email));
+
+            document.getElementById("edit-team-bg").hidden = false;
+            document.getElementById("edit-team-popup").hidden = false;
+        }
+
+        function closeEditTeam() {
+            document.getElementById("edit-team-bg").hidden = true;
+            document.getElementById("edit-team-popup").hidden = true;
+            document.getElementById("member-search-input").value = "";
+            document.getElementById("leader-search-input").value = "";
+            document.getElementById("member-search-results").style.display = "none";
+            document.getElementById("leader-search-results").style.display = "none";
+        }
+
+        function liveSearch(role) {
+            clearTimeout(searchTimeout);
+            const query = document.getElementById(`${role}-search-input`).value.trim();
+            const resultsList = document.getElementById(`${role}-search-results`);
+
+            if (query.length < 1) {
+                resultsList.style.display = "none";
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{% url 'website:search_members' %}?q=${encodeURIComponent(query)}`, {
+                    headers: {"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value}
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        resultsList.innerHTML = "";
+
+                        if (data.members.length === 0) {
+                            resultsList.innerHTML = `<li style="padding:0.6rem 1rem;
+                    color:var(--text-secondary); font-size:0.85rem;">No results</li>`;
+                            resultsList.style.display = "block";
+                            return;
+                        }
+
+                        data.members.forEach(m => {
+                            // skip already selected
+                            if (editTeamState[role][m.id]) return;
+
+                            const li = document.createElement("li");
+                            li.style.cssText = `padding:0.6rem 1rem; cursor:pointer; font-size:0.9rem;
+                    color:var(--text-primary); border-bottom:1px solid var(--neural-line);
+                    transition:background 0.15s;`;
+                            li.innerHTML = `<strong>${m.name}</strong>
+                    <span style="color:var(--text-secondary); margin-left:0.5rem;
+                                 font-size:0.8rem;">${m.email}</span>`;
+                            li.onmouseenter = () => li.style.background = "var(--hover-bg, rgba(255,255,255,0.05))";
+                            li.onmouseleave = () => li.style.background = "";
+                            li.onclick = () => {
+                                addPerson(role, m.id, m.name, m.email);
+                                document.getElementById(`${role}-search-input`).value = "";
+                                resultsList.style.display = "none";
+                            };
+                            resultsList.appendChild(li);
+                        });
+
+                        resultsList.style.display = "block";
+                    });
+            }, 250); // debounce 250ms
+        }
+
+        function addPerson(role, id, name, email) {
+            if (editTeamState[role][id]) return; // already added
+            editTeamState[role][id] = {name, email};
+            renderSelected(role);
+        }
+
+        function removePerson(role, id) {
+            delete editTeamState[role][id];
+            renderSelected(role);
+        }
+
+        function renderSelected(role) {
+            const container = document.getElementById(`selected-${role}s`);
+            const hiddenInputs = document.getElementById(`${role}-hidden-inputs`);
+            const fieldName = role === 'member' ? 'member_ids' : 'leader_ids';
+
+            container.innerHTML = "";
+            hiddenInputs.innerHTML = "";
+
+            Object.entries(editTeamState[role]).forEach(([id, person]) => {
+                // pill
+                const pill = document.createElement("div");
+                pill.style.cssText = `display:flex; align-items:center; gap:0.4rem;
+            background:var(--card-bg); border:1px solid var(--neural-line);
+            border-radius:20px; padding:0.3rem 0.75rem; font-size:0.85rem;
+            color:${role === 'leader' ? 'var(--accent)' : 'var(--text-primary)'};`;
+                pill.innerHTML = `${person.name}
+            <span onclick="removePerson('${role}', '${id}')"
+                  style="cursor:pointer; color:var(--text-secondary);
+                         font-size:1rem; line-height:1;">&times;</span>`;
+                container.appendChild(pill);
+
+                // hidden input
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = fieldName;
+                input.value = id;
+                hiddenInputs.appendChild(input);
+            });
+        }
+
+        // close dropdowns when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest("#edit-team-popup")) {
+                document.getElementById("member-search-results").style.display = "none";
+                document.getElementById("leader-search-results").style.display = "none";
+            }
+        });
+
+        /* ── DELETE TEAM ── */
+        function openDeleteTeam(id, title) {
+            document.getElementById("delete-team-id").value = id;
+            document.getElementById("delete-team-title").textContent = title;
+            document.getElementById("delete-team-bg").hidden = false;
+            document.getElementById("delete-team-popup").hidden = false;
+        }
+
+        function closeDeleteTeam() {
+            document.getElementById("delete-team-bg").hidden = true;
+            document.getElementById("delete-team-popup").hidden = true;
+        }
+
+        function submitDeleteTeam(e) {
+            e.preventDefault();
+            fetch("{% url 'website:admin_delete_team' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `team_id=${document.getElementById("delete-team-id").value}`
+            }).then(res => {
+                if (res.ok) {
+                    closeDeleteTeam();
+                    location.reload();
+                }
             });
         }
     </script>

@@ -27,11 +27,34 @@ def meet_the_team(request):
 
 def admin_dashboard(request):
     members = Member.objects.select_related("major").all()
-    events = Event.objects.all().order_by("date", "start_time")
+    events  = Event.objects.all().order_by("date", "start_time")
+    teams_qs = Team.objects.prefetch_related("team_members", "team_leaders").all()
+
+    teams = []
+    for team in teams_qs:
+        leaders_str = ", ".join(
+            f"{l.first_name} {l.last_name}" for l in team.team_leaders.all()
+        ) or "No leader"
+        leaders_list = [
+            f"{l.first_name} {l.last_name}" for l in team.team_leaders.all()
+        ]
+        members_list = [
+            f"{m.first_name} {m.last_name}" for m in team.team_members.all()
+        ]
+
+        teams.append({
+            "obj":          team,
+            "leaders_str":  leaders_str,
+            "member_count": team.team_members.count(),
+            "leader_count": team.team_leaders.count(),
+            "leaders_json": json.dumps(leaders_list),
+            "members_json": json.dumps(members_list),
+        })
 
     return render(request, "admin-dashboard.html", {
         "members": members,
-        "events": events
+        "events":  events,
+        "teams":   teams,
     })
 
 
@@ -461,3 +484,58 @@ def delete_event(request):
         except Event.DoesNotExist:
             pass
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_team(request):
+    if request.method == "POST":
+        team_id = request.POST.get("team_id")
+        try:
+            team             = Team.objects.get(pk=team_id)
+            team.name        = request.POST.get("name", team.name)
+            team.description = request.POST.get("description", team.description)
+
+            # members
+            member_ids = request.POST.getlist("member_ids")
+            if member_ids:
+                team.team_members.set(Member.objects.filter(id__in=member_ids))
+            else:
+                team.team_members.clear()
+
+            # leaders
+            leader_ids = request.POST.getlist("leader_ids")
+            if leader_ids:
+                team.team_leaders.set(Member.objects.filter(id__in=leader_ids))
+            else:
+                team.team_leaders.clear()
+
+            team.save()
+        except Team.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_delete_team(request):
+    if request.method == "POST":
+        team_id = request.POST.get("team_id")
+        try:
+            Team.objects.get(pk=team_id).delete()
+        except Team.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@user_passes_test(lambda u: u.is_staff)
+def search_members(request):
+    query = request.GET.get("q", "").strip()
+    members = Member.objects.filter(
+        first_name__icontains=query
+    ) | Member.objects.filter(
+        last_name__icontains=query
+    ) | Member.objects.filter(
+        email__icontains=query
+    )
+    data = [
+        {"id": m.id, "name": f"{m.first_name} {m.last_name}", "email": m.email}
+        for m in members[:10]
+    ]
+    return JsonResponse({"members": data})

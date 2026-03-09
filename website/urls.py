@@ -17,6 +17,10 @@ path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("edit-role/", views.edit_role, name="edit_role"),
     path("delete-member/", views.delete_member, name="delete_member"),
     path("create-event/", views.create_event, name="create_event"),
-path('edit-event/',   views.edit_event,   name='edit_event'),
-path('delete-event/', views.delete_event, name='delete_event'),
+    path('edit-event/', views.edit_event, name='edit_event'),
+    path('delete-event/', views.delete_event, name='delete_event'),
+
+    path('teams/edit/', views.edit_team, name='edit_team'),
+    path('teams/delete/', views.admin_delete_team, name='admin_delete_team'),
+    path('members/search/', views.search_members, name='search_members'),
 ]
