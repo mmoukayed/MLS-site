@@ -9,8 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
 
 
-
-from website import models
+from website.models import Event, Team
 from accounts.models import Member, Major
 from django_countries import countries
 
@@ -30,9 +29,11 @@ def meet_the_team(request):
 
 def admin_dashboard(request):
     members = Member.objects.select_related("major").all()
+    events = Event.objects.all().order_by("date", "start_time")
 
     return render(request, "admin-dashboard.html", {
-        "members": members
+        "members": members,
+        "events": events
     })
 
 
@@ -42,10 +43,10 @@ def student_dashboard(request: WSGIRequest):
         # return HttpResponse(json.dumps({"message": "Not Logged In","error":20}),status=401)
         return redirect("/")
     teams = []
-    for team in models.Team.objects.all():
+    for team in Team.objects.all():
         if request.user in team.team_members.all() or request.user in team.team_leaders.all() or request.user in team.pending_members.all() or request.user in team.invited_members.all() or request.user == team.creator:
             teams.append(team)
-    return render(request, "student-dashboard.html",{"teams": teams, "events": models.Event.objects.all()})
+    return render(request, "student-dashboard.html",{"teams": teams, "events": Event.objects.all()})
 
 
 
@@ -58,17 +59,17 @@ def student_events(request: WSGIRequest):
 def student_teams(request: WSGIRequest):
     joined_teams = []
     invited_teams = []
-    for team in models.Team.objects.all():
+    for team in Team.objects.all():
         if request.user in team.team_leaders.all() or request.user in team.team_members.all() or request.user == team.creator or request.user in team.pending_members.all():
             joined_teams.append(team)
         elif request.user in team.invited_members.all():
             invited_teams.append(team)
-    return render(request, "student-teams.html", {"teams": models.Team.objects.all(), "joined_teams": joined_teams, "invited_teams": invited_teams})
+    return render(request, "student-teams.html", {"teams": Team.objects.all(), "joined_teams": joined_teams, "invited_teams": invited_teams})
 
 
 @login_required(login_url="/")
 def team_detail(request: WSGIRequest, team_id: int):
-    team = get_object_or_404(models.Team, pk=team_id)
+    team = get_object_or_404(Team, pk=team_id)
     op = False
     if request.user in team.team_leaders.all() or request.user == team.creator:
         op = True
@@ -96,7 +97,7 @@ def create_team(request: WSGIRequest):
     if not name:
         return JsonResponse({"message": "Team name is required", "error": 40}, status=400)
 
-    team = models.Team(name=name, description=description)
+    team = Team(name=name, description=description)
     team.save()
     team.team_leaders.add(request.user)
     team.save()
@@ -108,8 +109,8 @@ def create_team(request: WSGIRequest):
 @require_http_methods(["DELETE"])
 def delete_team(request: WSGIRequest, team_id: int):
     try:
-        team = models.Team.objects.get(pk=team_id)
-    except models.Team.DoesNotExist:
+        team = Team.objects.get(pk=team_id)
+    except Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
     if not team.team_leaders.contains(request.user):
@@ -123,8 +124,8 @@ def delete_team(request: WSGIRequest, team_id: int):
 @require_http_methods(["POST"])
 def join_team(request: WSGIRequest, team_id: int):
     try:
-        team = models.Team.objects.get(pk=team_id)
-    except models.Team.DoesNotExist:
+        team = Team.objects.get(pk=team_id)
+    except Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
     if team.team_members.contains(request.user) or team.team_leaders.contains(request.user):
@@ -141,8 +142,8 @@ def join_team(request: WSGIRequest, team_id: int):
 @require_http_methods(["POST"])
 def accept_invite_request(request: WSGIRequest, team_id: int, user_id: int):
     try:
-        team = models.Team.objects.get(pk=team_id)
-    except models.Team.DoesNotExist:
+        team = Team.objects.get(pk=team_id)
+    except Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
     if not team.team_leaders.contains(request.user):
@@ -169,8 +170,8 @@ def accept_invite_request(request: WSGIRequest, team_id: int, user_id: int):
 @require_http_methods(["POST"])
 def reject_invite_request(request: WSGIRequest, team_id: int, user_id: int):
     try:
-        team = models.Team.objects.get(pk=team_id)
-    except models.Team.DoesNotExist:
+        team = Team.objects.get(pk=team_id)
+    except Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
     if not team.team_leaders.contains(request.user):
@@ -192,8 +193,8 @@ def reject_invite_request(request: WSGIRequest, team_id: int, user_id: int):
 @require_http_methods(["POST"])
 def leave_team(request: WSGIRequest, team_id: int):
     try:
-        team = models.Team.objects.get(pk=team_id)
-    except models.Team.DoesNotExist:
+        team = Team.objects.get(pk=team_id)
+    except Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
     if not team.team_members.contains(request.user):
@@ -251,4 +252,60 @@ def delete_member(request):
         except Member.DoesNotExist:
             pass
 
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@user_passes_test(lambda u: u.is_staff)
+def create_event(request):
+
+    if request.method == "POST":
+
+        title = request.POST.get("title")
+        details = request.POST.get("details")
+        date = request.POST.get("date")
+        start_time = request.POST.get("start_time")
+        end_time = request.POST.get("end_time")
+        location = request.POST.get("location")
+        image = request.FILES.get("image")
+
+        Event.objects.create(
+            title=title,
+            details=details,
+            date=date,
+            start_time=start_time,
+            end_time=end_time,
+            location=location,
+            image=image
+        )
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_event(request):
+    if request.method == "POST":
+        event_id = request.POST.get("event_id")
+        try:
+            event = Event.objects.get(pk=event_id)
+            event.title      = request.POST.get("title", event.title)
+            event.details    = request.POST.get("details", event.details)
+            event.date       = request.POST.get("date", event.date)
+            event.start_time = request.POST.get("start_time", event.start_time)
+            event.end_time   = request.POST.get("end_time", event.end_time)
+            event.location   = request.POST.get("location", event.location)
+            image = request.FILES.get("image")
+            if image:
+                event.image = image
+            event.save()
+        except Event.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_event(request):
+    if request.method == "POST":
+        event_id = request.POST.get("event_id")
+        try:
+            Event.objects.get(pk=event_id).delete()
+        except Event.DoesNotExist:
+            pass
     return redirect(request.META.get('HTTP_REFERER', '/'))

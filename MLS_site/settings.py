@@ -175,3 +175,6 @@ SOCIALACCOUNT_ADAPTER = "accounts.adapter.MySocialAccountAdapter"
 ACCOUNT_ADAPTER = "accounts.adapter.MyAccountAdapter"
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
+
+MEDIA_URL = "/uploaded_media/"
+MEDIA_ROOT = BASE_DIR / "uploaded_media"

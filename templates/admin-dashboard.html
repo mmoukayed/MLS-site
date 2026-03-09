@@ -31,11 +31,11 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" onclick="showAdminTab('overview')">Overview</button>
-            <button class="tab" onclick="showAdminTab('users')">Users</button>
-            <button class="tab" onclick="showAdminTab('teams')">Teams</button>
-            <button class="tab" onclick="showAdminTab('events')">Events</button>
-            <button class="tab" onclick="showAdminTab('cms')">Landing Page CMS</button>
+            <button class="tab active" onclick="showAdminTab('overview', event)">Overview</button>
+            <button class="tab" onclick="showAdminTab('users', event)">Users</button>
+            <button class="tab" onclick="showAdminTab('teams', event)">Teams</button>
+            <button class="tab" onclick="showAdminTab('events', event)">Events</button>
+            <button class="tab" onclick="showAdminTab('cms', event)">Landing Page CMS</button>
         </div>
 
         <!-- Overview Tab -->
@@ -44,14 +44,14 @@
                 <div class="dashboard-card fade-in visible">
                     <h3 class="dashboard-card-title">Quick Actions</h3>
                     <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                        <button class="btn btn-primary" style="width: 100%;" onclick="showAdminTab('events')">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showAdminTab('events', event)">
                             <span>+ Create Event</span>
                             <div class="btn-glow"></div>
                         </button>
-                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('cms')">
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('cms', event)">
                             Edit Landing Page
                         </button>
-                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('users')">
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('users', event)">
                             Manage Users
                         </button>
                     </div>
@@ -126,41 +126,75 @@
         </div>
 
 
-        <!-- Events Tab (hidden by default) -->
         <div id="events-tab" style="display: none;">
             <div class="dashboard-card fade-in visible">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h3 class="dashboard-card-title">Manage Events</h3>
-                    <button class="btn btn-primary" onclick="alert('Create event form would open')">
+                    <button class="btn btn-primary" onclick="openEventPopup()">
                         <span>+ Create Event</span>
                         <div class="btn-glow"></div>
                     </button>
                 </div>
+                <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem;">
+                    <button class="btn btn-small btn-secondary active-filter" onclick="filterEvents('all', this)">All
+                    </button>
+                    <button class="btn btn-small btn-secondary" onclick="filterEvents('upcoming', this)">Upcoming
+                    </button>
+                    <button class="btn btn-small btn-secondary" onclick="filterEvents('past', this)">Past</button>
+                </div>
                 <ul class="item-list">
-                    <li class="item">
-                        <div class="item-header">
-                            <div>
-                                <span class="item-title">Introduction to Neural Networks</span>
-                                <div class="item-meta">Friday, Feb 21, 2026 • 6:00 PM • GOL-2590</div>
+                    {% for event in events %}
+                        <li class="item" data-date="{{ event.date|date:'Y-m-d' }}">
+                            <div class="item-header">
+                                <!-- FIX #8: Thumbnail + separate clickable info area -->
+                                <div style="display:flex; align-items:center; gap:0.75rem; flex:1; min-width:0;">
+                                    <div class="item-info"
+                                         onclick="openViewEvent(
+                                                 '{{ event.title|escapejs }}',
+                                                 `{{ event.details|escapejs }}`,
+                                                 '{{ event.date }}',
+                                                 '{{ event.start_time|time:"H:i" }}',
+                                                 '{{ event.end_time|time:"H:i" }}',
+                                                 '{{ event.location|escapejs }}',
+                                                 '{{ event.image.url }}'
+                                                 )"
+                                         style="cursor:pointer; min-width:0;">
+                                        <span class="item-title">{{ event.title }}</span>
+                                        <div class="item-meta">
+                                            {{ event.date }} • {{ event.start_time|time:"g:i A" }}
+                                            • {{ event.location }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FIX #4: Delete button properly connected -->
+                                <div class="item-actions" style="flex-shrink:0;">
+                                    <button class="btn btn-small btn-secondary"
+                                            onclick="openEditEvent(
+                                                    '{{ event.id }}',
+                                                    '{{ event.title|escapejs }}',
+                                                    `{{ event.details|escapejs }}`,
+                                                    '{{ event.start_time|time:"H:i" }}',
+                                                    '{{ event.end_time|time:"H:i" }}',
+                                                    '{{ event.date|date:"Y-m-d" }}',
+                                                    '{{ event.location|escapejs }}'
+                                                    )">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-small btn-danger"
+                                            onclick="openDeleteEvent('{{ event.id }}', '{{ event.title|escapejs }}')">
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
-                            <div class="item-actions">
-                                <button class="btn btn-small btn-secondary">Edit</button>
-                                <button class="btn btn-small btn-danger">Delete</button>
+                        </li>
+                    {% empty %}
+                        <li class="item">
+                            <div class="item-header">
+                                <span class="item-title">No events created yet</span>
                             </div>
-                        </div>
-                    </li>
-                    <li class="item">
-                        <div class="item-header">
-                            <div>
-                                <span class="item-title">Spring Hackathon 2026</span>
-                                <div class="item-meta">Saturday, Mar 15, 2026 • 9:00 AM • GCCIS</div>
-                            </div>
-                            <div class="item-actions">
-                                <button class="btn btn-small btn-secondary">Edit</button>
-                                <button class="btn btn-small btn-danger">Delete</button>
-                            </div>
-                        </div>
-                    </li>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -268,9 +302,168 @@
 
         <div class="backdrop-close" onclick="closeDeletePopup()"></div>
     </div>
+    <!-- FIX #1 & #2: Create Event Popup — unique IDs -->
+    <div class="account-popup-bg" id="create-event-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup wide"
+              id="create-event-popup"
+              hidden
+              method="POST"
+              action="{% url 'website:create_event' %}"
+              enctype="multipart/form-data">
+            <div class="popup-header">
+                <h1>Create Event</h1>
+                <p class="popup-sub">Add a new event to the system</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <label>
+                    <input class="form-input" name="title" placeholder="Event Title" required>
+                </label>
+                <label>
+                    <textarea class="form-input" name="details" placeholder="Event Details"></textarea>
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Start Time</span>
+                        <input type="time" class="form-input" name="start_time" required>
+                    </label>
+                    <label>
+                        <span class="form-label">End Time</span>
+                        <input type="time" class="form-input" name="end_time" required>
+                    </label>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Date</span>
+                        <input type="date" class="form-input" name="date" required>
+                    </label>
+                    <label>
+                        <span class="form-label">Location</span>
+                        <input class="form-input" name="location" placeholder="Location" required>
+                    </label>
+                </div>
+                <label>
+                    <span class="form-label">Upload Picture</span>
+                    <input type="file" class="form-input" name="image">
+                </label>
+                <button class="login-btn primary-btn" type="submit">
+                    Create Event
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEventPopup()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEventPopup()"></div>
+    </div>
+
+    <!-- FIX #1 & #3: Edit Event Popup — unique IDs -->
+    <div class="account-popup-bg" id="edit-event-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup wide"
+              id="edit-event-popup"
+              hidden
+              method="POST"
+              action="{% url 'website:edit_event' %}"
+              enctype="multipart/form-data">
+            <div class="popup-header">
+                <h1>Edit Event</h1>
+                <p class="popup-sub">Edit existing event</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <input type="hidden" name="event_id" id="edit-event-id">
+                <label>
+                    <input class="form-input" name="title" placeholder="Event Title" required>
+                </label>
+                <label>
+                    <textarea class="form-input" name="details" placeholder="Event Details"></textarea>
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Start Time</span>
+                        <input type="time" class="form-input" name="start_time" required>
+                    </label>
+                    <label>
+                        <span class="form-label">End Time</span>
+                        <input type="time" class="form-input" name="end_time" required>
+                    </label>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Date</span>
+                        <input type="date" class="form-input" name="date" required>
+                    </label>
+                    <label>
+                        <span class="form-label">Location</span>
+                        <input class="form-input" name="location" placeholder="Location" required>
+                    </label>
+                </div>
+                <label>
+                    <span class="form-label">Upload Picture</span>
+                    <input type="file" class="form-input" name="image">
+                </label>
+                <button class="login-btn primary-btn" type="submit">
+                    Edit Event
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEditEvent()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEditEvent()"></div>
+    </div>
+
+    <!-- View Event Popup -->
+    <div class="account-popup-bg" id="view-event-bg" hidden>
+        <div class="account-popup wide" id="view-event-popup" hidden>
+            <div class="popup-header">
+                <h1 id="view-title"></h1>
+                <p class="popup-sub" id="view-date"></p>
+            </div>
+            <div class="columnizer">
+                <img id="view-image" style="width:100%;border-radius:12px;max-height:260px;object-fit:cover;" alt="">
+                <p id="view-details" style="text-align:center;color:var(--text-secondary);"></p>
+                <div class="event-grid" style="display: flex; justify-content: space-evenly">
+                    <div>
+                        <strong>Start</strong>
+                        <p id="view-start"></p>
+                    </div>
+                    <div>
+                        <strong>End</strong>
+                        <p id="view-end"></p>
+                    </div>
+                    <div class="event-grid-full">
+                        <strong>Location</strong>
+                        <p id="view-location"></p>
+                    </div>
+                </div>
+                <button class="login-btn btn-secondary" onclick="closeViewEvent()">Close</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeViewEvent()"></div>
+    </div>
+
+    <!-- FIX #5: Delete Event Popup — moved outside view popup, now a sibling -->
+    <div class="account-popup-bg" id="delete-event-bg" hidden>
+        <form class="account-popup" id="delete-event-popup" hidden
+              onsubmit="submitDeleteEvent(event)"
+              method="POST"
+              action="{% url 'website:delete_event' %}">
+            <div class="popup-header">
+                <h2>Delete Event</h2>
+                <p class="popup-sub">Delete <strong id="delete-event-title"></strong>?</p>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="event_id" id="delete-event-id">
+            <div class="columnizer">
+                <button class="login-btn primary-btn" type="submit">Delete Event</button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeDeleteEvent()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeDeleteEvent()"></div>
+    </div>
+
     <script src="{% static "script.js" %}"></script>
     <script>
-        function showAdminTab(tab) {
+        function showAdminTab(tab, e) {
             // Hide all tabs
             document.getElementById('overview-tab').style.display = 'none';
             document.getElementById('users-tab').style.display = 'none';
@@ -282,7 +475,7 @@
 
             // Update active tab button
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            e.target.classList.add('active');
         }
 
         function openRolePopup(email, currentRole, firstName) {
@@ -376,6 +569,103 @@
                 }
             });
 
+        }
+
+        /* ── CREATE EVENT POPUP (FIX #2) ── */
+        function openEventPopup() {
+            document.getElementById("create-event-bg").hidden = false;
+            document.getElementById("create-event-popup").hidden = false;
+        }
+
+        function closeEventPopup() {
+            document.getElementById("create-event-bg").hidden = true;
+            document.getElementById("create-event-popup").hidden = true;
+        }
+
+        /* ── VIEW EVENT POPUP ── */
+        function openViewEvent(title, details, date, start, end, location, image) {
+            document.getElementById("view-title").textContent = title;
+            document.getElementById("view-details").textContent = details;
+            document.getElementById("view-date").textContent = date;
+            document.getElementById("view-start").textContent = start;
+            document.getElementById("view-end").textContent = end;
+            document.getElementById("view-location").textContent = location;
+            document.getElementById("view-image").src = image;
+            document.getElementById("view-event-bg").hidden = false;
+            document.getElementById("view-event-popup").hidden = false;
+        }
+
+        function closeViewEvent() {
+            document.getElementById("view-event-bg").hidden = true;
+            document.getElementById("view-event-popup").hidden = true;
+        }
+
+        /* ── EDIT EVENT POPUP (FIX #3) ── */
+        function openEditEvent(id, title, details, start, end, date, location) {
+            document.getElementById("edit-event-id").value = id;
+
+            const form = document.getElementById("edit-event-popup");
+            form.querySelector('[name="title"]').value = title;
+            form.querySelector('[name="details"]').value = details;
+            form.querySelector('[name="start_time"]').value = start;
+            form.querySelector('[name="end_time"]').value = end;
+            form.querySelector('[name="date"]').value = date;
+            form.querySelector('[name="location"]').value = location;
+
+            document.getElementById("edit-event-bg").hidden = false;
+            document.getElementById("edit-event-popup").hidden = false;
+        }
+
+        function closeEditEvent() {
+            document.getElementById("edit-event-bg").hidden = true;
+            document.getElementById("edit-event-popup").hidden = true;
+        }
+
+        /* ── DELETE EVENT POPUP (FIX #4 + #6) ── */
+        function openDeleteEvent(id, title) {
+            document.getElementById("delete-event-id").value = id;
+            document.getElementById("delete-event-title").textContent = title;
+            document.getElementById("delete-event-bg").hidden = false;
+            document.getElementById("delete-event-popup").hidden = false;
+        }
+
+        function closeDeleteEvent() {
+            document.getElementById("delete-event-bg").hidden = true;
+            document.getElementById("delete-event-popup").hidden = true;
+        }
+
+        function submitDeleteEvent(e) {
+            e.preventDefault();
+            fetch("{% url 'website:delete_event' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `event_id=${document.getElementById("delete-event-id").value}`
+            }).then(res => {
+                if (res.ok) {
+                    closeDeleteEvent();
+                    location.reload();
+                }
+            });
+        }
+
+        function filterEvents(filter, btn) {
+            document.querySelectorAll('.active-filter').forEach(b => b.classList.remove('active-filter'));
+            btn.classList.add('active-filter');
+
+            const today = new Date().toISOString().split('T')[0]; // "2026-03-09"
+
+            document.querySelectorAll('#events-tab .item[data-date]').forEach(item => {
+                const date = item.dataset.date;
+                let show = true;
+
+                if (filter === 'upcoming') show = date >= today;
+                if (filter === 'past') show = date < today;
+
+                item.style.display = show ? 'block' : 'none';
+            });
         }
     </script>
 

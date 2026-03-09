@@ -17,4 +17,4 @@ class Event(models.Model):
     end_time = models.TimeField()
     date = models.DateField()
     location = models.CharField()
-    image = models.ImageField(default="uploaded_media/events/events_icon.svg", upload_to="uploaded_media/events")
+    image = models.ImageField(default="events/events_icon.svg", upload_to="events/")
