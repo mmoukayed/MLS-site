@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
 from website import models
-from accounts.models import Member
+from accounts.models import Member, Major
 
 
 # ════════════════════════════════════════════════════════════
@@ -38,7 +38,7 @@ def student_dashboard(request: WSGIRequest):
 
 @login_required(login_url="/")
 def student_events(request: WSGIRequest):
-    return render(request, "student-events.html")
+    return render(request, "student-events.html", {'events': models.Event.objects.all()})
 
 
 @login_required(login_url="/")
@@ -59,12 +59,28 @@ def team_detail(request: WSGIRequest, team_id: int):
     op = False
     if request.user in team.team_leaders.all() or request.user == team.creator:
         op = True
-    return render(request, "team-detail.html", {"team": team, "op": op})
+    return render(request, "team-detail.html", {"team": team, "op": op, "users": Member.objects.all()})
 
 
 @login_required(login_url="/")
 def student_profile(request: WSGIRequest):
-    return render(request, "student-profile.html")
+    if request.method == "GET":
+        return render(request, "student-profile.html")
+    elif request.method == "POST":
+        user: Member = request.user
+        postreq = request.POST
+        print(postreq)
+        user.first_name = postreq.get("first_name")
+        user.last_name = postreq.get("last_name")
+        user.graduation_year = postreq.get("graduation_year")
+        user.date_of_birth = postreq.get("dob")
+        user.major = Major.objects.get(pk=postreq.get("field_of_study"))
+        user.gender = postreq.get("gender")
+        user.nationality = postreq.get("nationality")
+        user.save()
+        return redirect("/profile#success")
+    else:
+        return JsonResponse({"message":"Method not allowed"},status=405)
 
 
 # ════════════════════════════════════════════════════════════
@@ -80,11 +96,11 @@ def create_team(request: WSGIRequest):
     if not name:
         return JsonResponse({"message": "Team name is required", "error": 40}, status=400)
 
-    team = models.Team(name=name, description=description)
+    team = models.Team(name=name, description=description, creator=request.user)
     team.save()
     team.team_leaders.add(request.user)
     team.save()
-
+# TODO: Change to redirect
     return JsonResponse({"message": "Team created successfully", "error": 10, "team_id": team.pk})
 
 
@@ -96,8 +112,8 @@ def delete_team(request: WSGIRequest, team_id: int):
     except models.Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
-    if not team.team_leaders.contains(request.user):
-        return JsonResponse({"message": "Not authorised", "error": 32}, status=403)
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
 
     team.delete()
     return JsonResponse({"message": "Team deleted successfully", "error": 10})
@@ -111,7 +127,7 @@ def join_team(request: WSGIRequest, team_id: int):
     except models.Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
-    if team.team_members.contains(request.user) or team.team_leaders.contains(request.user):
+    if team.team_members.contains(request.user) or team.team_leaders.contains(request.user) or request.user == team.creator:
         return JsonResponse({"message": "Already in team", "error": 33}, status=409)
 
     if team.pending_members.contains(request.user):
@@ -120,17 +136,31 @@ def join_team(request: WSGIRequest, team_id: int):
     team.pending_members.add(request.user)
     return JsonResponse({"message": "Join request sent", "error": 10})
 
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def cancel_join_request(request: WSGIRequest, team_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+    
+    if not team.pending_members.contains(request.user):
+        return JsonResponse({"message": "Not previously requested already", "error": 35}, status=409)
+
+    team.pending_members.remove(request.user)
+    return JsonResponse({"message": "Join request cancelled", "error": 10})
+
 
 @login_required(login_url="/")
 @require_http_methods(["POST"])
-def accept_invite_request(request: WSGIRequest, team_id: int, user_id: int):
+def accept_join_request(request: WSGIRequest, team_id: int, user_id: int):
     try:
         team = models.Team.objects.get(pk=team_id)
     except models.Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
-    if not team.team_leaders.contains(request.user):
-        return JsonResponse({"message": "Not authorised", "error": 32}, status=403)
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
 
     try:
         member = Member.objects.get(pk=user_id)
@@ -140,7 +170,7 @@ def accept_invite_request(request: WSGIRequest, team_id: int, user_id: int):
     if not team.pending_members.contains(member):
         return JsonResponse({"message": "Member did not request to join", "error": 34}, status=400)
 
-    if team.team_members.contains(member):
+    if team.team_members.contains(member) or team.team_leaders.contains(member):
         return JsonResponse({"message": "Member already in team", "error": 33}, status=409)
 
     team.team_members.add(member)
@@ -151,14 +181,14 @@ def accept_invite_request(request: WSGIRequest, team_id: int, user_id: int):
 
 @login_required(login_url="/")
 @require_http_methods(["POST"])
-def reject_invite_request(request: WSGIRequest, team_id: int, user_id: int):
+def reject_join_request(request: WSGIRequest, team_id: int, user_id: int):
     try:
         team = models.Team.objects.get(pk=team_id)
     except models.Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
-    if not team.team_leaders.contains(request.user):
-        return JsonResponse({"message": "Not authorised", "error": 32}, status=403)
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
 
     try:
         member = Member.objects.get(pk=user_id)
@@ -171,6 +201,38 @@ def reject_invite_request(request: WSGIRequest, team_id: int, user_id: int):
     team.pending_members.remove(member)
     return JsonResponse({"message": "Request rejected", "error": 10})
 
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def accept_invite(request: WSGIRequest, team_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+
+    if not team.invited_members.contains(request.user):
+        return JsonResponse({"message": "You were not invited to this team", "error": 32}, status=403)
+
+    team.team_members.add(request.user)
+    team.invited_members.remove(request.user)
+
+    return JsonResponse({"message": "Joined Team Successfully", "error": 10})
+
+
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def reject_invite(request: WSGIRequest, team_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+
+    if not team.invited_members.contains(request.user):
+        return JsonResponse({"message": "You were not invited to this team", "error": 32}, status=403)
+
+    team.invited_members.remove(request.user)
+
+    return JsonResponse({"message": "Invitation rejected", "error": 10})
+
 
 @login_required(login_url="/")
 @require_http_methods(["POST"])
@@ -180,8 +242,97 @@ def leave_team(request: WSGIRequest, team_id: int):
     except models.Team.DoesNotExist:
         return JsonResponse({"message": "Team not found", "error": 30}, status=404)
 
-    if not team.team_members.contains(request.user):
+    if not team.team_members.contains(request.user) or not team.team_leaders.contains(request.user):
         return JsonResponse({"message": "Not in team", "error": 36}, status=400)
 
     team.team_members.remove(request.user)
+    team.team_leaders.remove(request.user)
     return JsonResponse({"message": "Left team successfully", "error": 10})
+
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def invite_member(request: WSGIRequest, team_id: int, user_id: int):
+    
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        user = Member.objects.get(pk=user_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+    except Member.DoesNotExist:
+        return JsonResponse({"message": "User not found", "error": 30}, status=404)
+    
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
+    
+    if team.team_members.contains(user) or team.team_leaders.contains(user) or team.creator == user:
+        return JsonResponse({"message": "Already in team", "error": 36}, status=400)
+
+    team.invited_members.add(user)
+    return JsonResponse({"message": "Invitation Sent Successfully!", "error": 10})
+
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def remove_member(request: WSGIRequest, team_id: int, user_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        user = Member.objects.get(pk=user_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+    except Member.DoesNotExist:
+        return JsonResponse({"message": "User not found", "error": 30}, status=404)
+
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
+
+    if not (team.team_members.contains(user) or team.team_leaders.contains(user)):
+        return JsonResponse({"message": "User not in team", "error": 10}, status=400)
+    
+    team.team_members.remove(user)
+    team.team_leaders.remove(user)
+    team.invited_members.remove(user)
+    team.pending_members.remove(user)
+    return JsonResponse({"message": "Team member removed!", "error": 36})
+
+
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def promote_member(request: WSGIRequest, team_id: int, user_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        user = Member.objects.get(pk=user_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+    except Member.DoesNotExist:
+        return JsonResponse({"message": "User not found", "error": 30}, status=404)
+
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
+
+    if not (team.team_members.contains(user) or team.team_leaders.contains(user) or team.creator == user):
+        return JsonResponse({"message": "User not in team", "error": 36}, status=400)
+    
+    team.team_members.remove(user)
+    team.team_leaders.add(user)
+    return JsonResponse({"message": "User has been promoted to leader!", "error": 10})
+
+@login_required(login_url="/")
+@require_http_methods(["POST"])
+def demote_member(request: WSGIRequest, team_id: int, user_id: int):
+    try:
+        team = models.Team.objects.get(pk=team_id)
+        user = Member.objects.get(pk=user_id)
+    except models.Team.DoesNotExist:
+        return JsonResponse({"message": "Team not found", "error": 30}, status=404)
+    except Member.DoesNotExist:
+        return JsonResponse({"message": "User not found", "error": 30}, status=404)
+
+    if not (team.team_leaders.contains(request.user) or request.user == team.creator):
+        return JsonResponse({"message": "Not authorized", "error": 32}, status=403)
+
+    if not (team.team_members.contains(user) or team.team_leaders.contains(user) or team.creator == user):
+        return JsonResponse({"message": "User not in team", "error": 36}, status=400)
+    
+    team.team_leaders.remove(user)
+    team.team_members.add(user)
+    return JsonResponse({"message": "User demoted to member!", "error": 10})
+

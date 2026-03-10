@@ -16,9 +16,9 @@
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
           {% if request.user == team.creator %}
-          <span class="badge badge-warning">Creator</span>
-          {% elif request.user in team.team_leaders.all %}
           <span class="badge badge-warning">Owner</span>
+          {% elif request.user in team.team_leaders.all %}
+          <span class="badge badge-warning">Leader</span>
           {% elif request.user in team.pending_members.all %}
           <span class="badge badge-warning">Pending Invite</span>
           {% elif request.user in team.invited_members.all %}
@@ -32,21 +32,21 @@
       </div>
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         {% if request.user in team.pending_members.all %}
-        <button class="btn btn-outline" onclick="">Cancel Join Request</button>
+        <button class="btn btn-outline" onclick="cancelJoinRequest({{team.pk}})">Cancel Join Request</button>
         {% elif request.user in team.invited_members.all %}
-        <button class="btn btn-success" onclick="">Accept Invite</button>
-        <button class="btn btn-danger" onclick="">Reject Invite</button>
+        <button class="btn btn-success" onclick="acceptInvite({{team.pk}})">Accept Invite</button>
+        <button class="btn btn-danger" onclick="rejectInvite({{team.pk}})">Reject Invite</button>
         {% elif op %}
-        <button class="btn" onclick="inviteModal()">
+        <button class="btn" onclick="showInviteModal()">
           <span>Invite Members</span>
           <div class="btn-glow"></div>
         </button>
         {% elif request.user in team.team_members.all %}
         {% else %}
-        <button class="btn btn-outline" onclick="">Request To Join</button>
+        <button class="btn btn-outline" onclick="requestToJoinTeam({{team.pk}})">Request To Join</button>
         {% endif %}
-        {% if request.user in team.team_members.all or request.user in team.team_leaders.all %}
-        <button class="btn btn-danger" onclick="leaveTeam()">Leave Team</button>
+        {% if request.user in team.team_members.all or request.user in team.team_leaders.all and request.user != team.creator %}
+        <button class="btn btn-danger" onclick="leaveTeam({{team.pk}})">Leave Team</button>
         {% endif %}
       </div>
     </div>
@@ -63,16 +63,17 @@
     <div id="tab-members" style="margin-top: 2rem;">
       <h3 style="margin-bottom: 1rem;">Team Members</h3>
       <ul class="item-list">
-        
+        {% if team.creator not in team.team_leaders.all %}
         <li class="item">
           <div class="item-header">
             <div>
               <span class="item-title">{{ team.creator.get_full_name }}</span>
-              <div class="item-meta">{{team.creator.email}} • {{team.major.name}} • {{team.creator.graduation_year}}</div>
+              <div class="item-meta">{{team.creator.email}} • {{team.creator.major.name}} • {{team.creator.graduation_year}}</div>
             </div>
-            <span class="badge badge-warning">Creator</span>
+            <span class="badge badge-warning">Owner</span>
           </div>
         </li>
+        {% endif %}
         {% for leader in team.team_leaders.all %}
         <li class="item">
           <div class="item-header">
@@ -80,7 +81,19 @@
               <span class="item-title">{{ leader.get_full_name }}</span>
               <div class="item-meta">{{ leader.email }} • {{ leader.major.name }} • {{leader.graduation_year}}</div>
             </div>
+            {% if leader == team.creator %}
             <span class="badge badge-warning">Owner</span>
+            {% else %}
+            <span class="badge badge-warning">Leader</span>
+            {% endif %}
+            {% if op %}
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+              <button class="btn btn-outline" style="width: 100%; " onclick="demoteMember({{team.pk}}, {{leader.pk}})">Demote</button>
+              {% if leader != team.creator %}
+              <button class="btn btn-danger" style="width: 100%; " onclick="removeMember({{team.pk}}, {{leader.pk}})">Remove</button>
+              {% endif %}
+            </div>
+            {% endif %}
           </div>
         </li>
         {% endfor %}
@@ -89,9 +102,15 @@
           <div class="item-header">
             <div>
               <span class="item-title">{{ member.get_full_name }}</span>
-              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
+              <div class="item-meta">{{ member.email }} • {{ member.major.name }} • {{member.graduation_year}}</div>
             </div>
             <span class="badge badge-primary">Member</span>
+            {% if op %}
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+              <button class="btn btn-outline" style="width: 100%; " onclick="promoteMember({{team.pk}}, {{member.pk}})">Promote</button>
+              <button class="btn btn-danger" style="width: 100%; " onclick="removeMember({{team.pk}}, {{member.pk}})">Remove</button>
+            </div>
+            {% endif %}
           </div>
         </li>
         {% endfor %}
@@ -101,7 +120,7 @@
           <div class="item-header">
             <div>
               <span class="item-title">{{ member.get_full_name }}</span>
-              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
+              <div class="item-meta">{{ member.email }} • {{ member.major.name }} • {{member.graduation_year}}</div>
             </div>
             <span class="badge badge-success">Invited</span>
           </div>
@@ -119,12 +138,12 @@
           <div class="item-header">
             <div>
               <span class="item-title">{{ member.get_full_name }}</span>
-              <div class="item-meta">{{ member.email }} • {{ lmemberr.major.name }} • {{member.graduation_year}}</div>
+              <div class="item-meta">{{ member.email }} • {{ member.major.name }} • {{member.graduation_year}}</div>
             </div>
             <span class="badge badge-warning">Pending</span>
             <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
-              <button class="btn btn-success" onclick="">Accept</button>
-              <button class="btn btn-danger" onclick="">Reject</button>
+              <button class="btn btn-success" onclick="acceptJoinRequest({{team.pk}},{{member.pk}}, this)">Accept</button>
+              <button class="btn btn-danger" onclick="rejectJoinRequest({{team.pk}},{{member.pk}}, this)">Reject</button>
             </div>
           </div>
         </li>
@@ -153,11 +172,45 @@
           <span>Save Changes</span>
           <div class="btn-glow"></div>
         </button>
-        <button class="btn btn-danger" onclick="deleteTeam()">Delete Team</button>
+        <button class="btn btn-danger" onclick="deleteTeam({{team.pk}})">Delete Team</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Invite Team Members -->
+<div id="inviteModal" class="modal-overlay" style="display: none;" onclick="if(event.target===this) hideInviteModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Invite Members</h2>
+      <button class="modal-close" onclick="hideInviteModal()">✕</button>
+    </div>
+    <ul class="item-list" style="overflow-y: auto; max-height: 600px; padding: 10px;">
+      {% for member in users %}
+      <li class="item">
+        <div class="item-header">
+          <div>
+            <span class="item-title">{{ member.get_full_name }}</span>
+            <div class="item-meta">{{ member.email }} • {{ member.major.name }} • {{member.graduation_year}}</div>
+          </div>
+          {% comment %} <span class="badge badge-warning">Pending</span> {% endcomment %}
+          <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+            <button class="btn {% if member in team.invited_members.all %}btn-secondary{% else %}btn-primary{% endif %}" onclick="inviteMember({{team.pk}},{{member.pk}}, this)"{% if member in team.invited_members.all %} disabled>Invited{% else %}>Invite{% endif %}</button>
+          </div>
+        </div>
+      </li>
+      {% empty %}
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>No pending requests</h3>
+        <p>New join requests will appear here.</p>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+
 
 {% block extra_scripts %}
 <script>
@@ -169,21 +222,14 @@
     document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-
-  function leaveTeam() {
-    if (!confirm('Are you sure you want to leave this team?')) return;
-    // POST to /team/<id>/leave/
+  function showInviteModal() {
+    document.getElementById('inviteModal').style.display = 'flex';
   }
-
-  function deleteTeam() {
-    if (!confirm('Permanently delete this team? This cannot be undone.')) return;
-    // DELETE to /team/<id>/delete/
-  }
-
-  function inviteModal() {
-    alert('Invite feature coming soon!');
+  function hideInviteModal() {
+    document.getElementById('inviteModal').style.display = 'none';
   }
 </script>
+<script src="{% static "teamProcessor.js" %}"></script>
 {% endblock extra_scripts %}
 
 {% endblock content %}

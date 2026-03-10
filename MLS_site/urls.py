@@ -13,4 +13,7 @@ urlpatterns = [
 
     # ── Team API endpoints  (/team/create/, /team/<id>/join/, etc.)
     path("team/",   include("website.teamurls")),
+    
+    # ── Event API endpoints  (/event/create/, /event/<id>/join/, etc.)
+    path("event/",   include("website.eventurls")),
 ]

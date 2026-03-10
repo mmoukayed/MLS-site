@@ -12,6 +12,8 @@
   <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
 
     <!-- Event 1 -->
+     {% for event in events %}
+     
     <div class="dashboard-card fade-in visible">
       <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start;">
         <div style="background: var(--accent-glow); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
@@ -23,77 +25,23 @@
           </svg>
         </div>
         <div>
-          <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem;">Introduction to Neural Networks</h2>
+          <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem;">{{event.title}}</h2>
           <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-            <span>📅 Friday, Feb 21, 2026</span>
-            <span>🕐 6:00 PM – 8:00 PM</span>
-            <span>📍 H-002</span>
+            <span>📅 {{event.date|date:"l, M j, Y "}}</span>
+            <span>🕐 {{event.start_time|date:"g:i A"}} – {{event.end_time|date:"g:i A"}}</span>
+            <span>📍 {{event.location}}</span>
           </div>
           <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
             Join us for a hands-on workshop covering the fundamentals of neural networks. Perfect for beginners!
           </p>
-          <button class="btn">
+          <a class="btn" href="{{event.registration_link}}" {% if event.new_tab %}target="_blank"{% endif %}>
             <span>Register Now</span>
             <div class="btn-glow"></div>
-          </button>
+          </a>
         </div>
       </div>
     </div>
-
-    <!-- Event 2 -->
-    <div class="dashboard-card fade-in visible">
-      <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start;">
-        <div style="background: var(--accent-glow); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-            <path d="M2 17l10 5 10-5"></path>
-            <path d="M2 12l10 5 10-5"></path>
-          </svg>
-        </div>
-        <div>
-          <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem;">Spring Hackathon 2026</h2>
-          <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-            <span>📅 Saturday, Mar 15, 2026</span>
-            <span>🕐 9:00 AM – 9:00 PM</span>
-            <span>📍 Innovation Centre</span>
-          </div>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-            24-hour hackathon with prizes for the best ML projects. Form your team and start building!
-          </p>
-          <button class="btn">
-            <span>Register</span>
-            <div class="btn-glow"></div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Event 3 -->
-    <div class="dashboard-card fade-in visible">
-      <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start;">
-        <div style="background: var(--accent-glow); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-          </svg>
-        </div>
-        <div>
-          <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem;">ML Project Showcase</h2>
-          <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-            <span>📅 Friday, Apr 10, 2026</span>
-            <span>🕐 5:00 PM – 7:00 PM</span>
-            <span>📍 G Block</span>
-          </div>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-            Present your ML projects and network with industry professionals.
-          </p>
-          <button class="btn">
-            <span>Register</span>
-            <div class="btn-glow"></div>
-          </button>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
 
   </div>
 </div>

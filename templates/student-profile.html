@@ -10,7 +10,7 @@
   </div>
 
   <div class="dashboard-card fade-in visible">
-    <form id="profileForm" onsubmit="saveProfile(event)">
+    <form id="profileForm" onsubmit="saveProfile(event)" method="POST">
       {% csrf_token %}
 
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
@@ -85,9 +85,33 @@
 {% block extra_scripts %}
 <script>
   async function saveProfile(e) {
-    e.preventDefault();
+    /*e.preventDefault();
+    const form = document.getElementById('profileForm');
+    // Basic HTML5 validation
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+
+    const formData = new FormData(form);
+    console.log(formData);
     // TODO: wire to a profile-update API endpoint
-    alert('Profile saved! (Backend endpoint pending)');
+    const res = await fetch('/profile/modify/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRF('login-form') },
+        body: formData
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+        showSuccess("Member Removed From Team Successfully!");
+        setTimeout(function() {location.reload()},1000);
+    }
+    else {
+        console.error(data);
+        showError(data.message || "Something went wrong!");
+    }*/
+  }
+  if(location.hash == "#success") {
+    showSuccess("Profile Modified Successfully!");
+    setTimeout(function() {window.location.href = "/dashboard"},2000);
   }
 </script>
 {% endblock extra_scripts %}
