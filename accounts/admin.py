@@ -19,6 +19,7 @@ class MemberAdmin(UserAdmin):
         "is_staff",
         "is_active",
     ]
+    search_fields = ("email", "first_name", "last_name")
     ordering = ["email", "first_name", "last_name", "gender","date_of_birth"]
     fieldsets = (
         (None, {"fields": ("email", "password")}),

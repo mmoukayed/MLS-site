@@ -74,9 +74,10 @@
 
         <!-- Step 1: Login options -->
         <div id="login-options" class="columnizer">
-            <button class="social-btn" type="button" onclick="handleGoogleAuth('login')">
+            <button class="social-btn" type="button" >
+                {% load socialaccount %}
                 <img src="{% static 'assets/Google Logo.svg' %}" width="20" height="20" alt="Google">
-                <span>Continue with Google</span>
+                <a href="{% provider_login_url 'google' %}"><span>Continue with Google</span></a>
             </button>
 
             <div class="or-divider"><span>or use email</span></div>
@@ -145,9 +146,12 @@
 
         <!-- Step 1: Email entry -->
         <div id="signup-options" class="columnizer">
-            <button class="social-btn" type="button" onclick="handleGoogleAuth('signup')">
+            <button class="social-btn" type="button" >
+                {% load socialaccount %}
                 <img src="{% static 'assets/Google Logo.svg' %}" width="20" height="20" alt="Google">
-                <span>Continue with Google</span>
+                <a href="{% provider_login_url 'google' %}">
+                    <span>Continue with Google</span>
+                </a>
             </button>
 
             <div class="or-divider"><span>or use email</span></div>

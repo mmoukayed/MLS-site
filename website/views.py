@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 
 from website import models
 from accounts.models import Member, Major
+from django_countries import countries
+
 
 
 # ════════════════════════════════════════════════════════════
@@ -336,3 +338,27 @@ def demote_member(request: WSGIRequest, team_id: int, user_id: int):
     team.team_members.add(user)
     return JsonResponse({"message": "User demoted to member!", "error": 10})
 
+
+
+
+@login_required(login_url="/")
+@require_http_methods(["GET", "POST"])
+def finish_profile(request):
+    user = request.user
+    majors = Major.objects.all()
+    if request.method == "POST":
+        user.first_name = request.POST.get("first_name", user.first_name)
+        user.last_name = request.POST.get("last_name", user.last_name)
+        user.date_of_birth = request.POST.get("dob", user.date_of_birth)
+        user.gender = request.POST.get("gender", user.gender)
+        user.major_id = request.POST.get("field_of_study") or user.major_id
+        user.graduation_year = request.POST.get("graduation_year", user.graduation_year)
+        user.nationality = request.POST.get("nationality", user.nationality)
+        user.save()
+        return redirect("website:profile")  # after completion
+
+    return render(request, "../templates/finish-profile.html", {
+        "user": user,
+        "majors": Major.objects.all(),
+        "nationalities": countries,
+    })

@@ -11,7 +11,7 @@ from django.core.handlers.wsgi import WSGIRequest
 
 from .models import Member, EmailOTP, Major
 from .emails import send_login_email
-from .auth_utils import verify_magic_token
+from .auth_utils import verify_magic_token, normalize_rit_email
 from .validators import university_email_validator
 
 
@@ -32,7 +32,7 @@ def _base_context():
 def request_login(request):
     try:
         data  = json.loads(request.body)
-        email = data.get("email", "").strip()
+        email = normalize_rit_email(data.get("email", ""))
 
         if not email:
             return JsonResponse({"error": "Email is required"}, status=400)
@@ -66,7 +66,7 @@ def magic_login(request):
     if not token:
         return HttpResponse("No token provided.", status=400)
 
-    email = verify_magic_token(token)
+    email = normalize_rit_email(verify_magic_token(token))
     if not email:
         return HttpResponse("This link is invalid or has expired. Please request a new one.", status=400)
 
@@ -99,7 +99,7 @@ def magic_login(request):
     # Mark all unused OTPs for this email as used (link login counts as auth)
     EmailOTP.objects.filter(email=email, is_used=False).update(is_used=True)
 
-    login(request, member)
+    login(request, member, backend="django.contrib.auth.backends.ModelBackend")
     return redirect("/")
 
 
@@ -111,7 +111,7 @@ def magic_login(request):
 def otp_login(request):
     try:
         data  = json.loads(request.body)
-        email = data.get("email", "").strip()
+        email = normalize_rit_email(data.get("email", ""))
         otp   = data.get("otp", "").strip()
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
@@ -161,7 +161,7 @@ def otp_login(request):
 
         request.session.pop("pending_signup", None)
 
-    login(request, member)
+    login(request, member, backend="django.contrib.auth.backends.ModelBackend")
     return JsonResponse({"message": "Login successful", "redirect": "/"})
 
 
@@ -173,7 +173,7 @@ def otp_login(request):
 def resend_otp(request):
     try:
         data  = json.loads(request.body)
-        email = data.get("email", "").strip()
+        email = normalize_rit_email(data.get("email", ""))
 
         if not email:
             return JsonResponse({"error": "Email required"}, status=400)
@@ -206,7 +206,7 @@ def resend_otp(request):
 @require_http_methods(["POST"])
 def signup(request: WSGIRequest):
     try:
-        email = request.POST.get("email", "").strip()
+        email = normalize_rit_email(request.POST.get("email", ""))
         if not email:
             return JsonResponse({"error": "Email is required"}, status=400)
 
@@ -245,10 +245,6 @@ def signup(request: WSGIRequest):
 # ════════════════════════════════════════════════════════════════
 #  PAGE VIEWS  (all render base.html so need base context)
 # ════════════════════════════════════════════════════════════════
-
-def home(request):
-    return render(request, "index.html", _base_context())
-
 
 def login_page(request):
     """Standalone login page — redirects to home if already authed.

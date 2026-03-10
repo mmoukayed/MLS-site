@@ -11,6 +11,8 @@ urlpatterns = [
     # ── Auth (login, signup, OTP, magic-link, logout)
     path("auth/",   include("accounts.urls", namespace="accounts")),
 
+    path("accounts/", include("allauth.urls")),
+
     # ── Team API endpoints  (/team/create/, /team/<id>/join/, etc.)
     path("team/",   include("website.teamurls")),
     
