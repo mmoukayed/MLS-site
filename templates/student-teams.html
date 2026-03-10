@@ -32,8 +32,10 @@
         <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
         {% if request.user in team.pending_members.all %}
         <span class="badge badge-warning">Pending Invite</span>
-        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        {% elif request.user == team.creator %}
         <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.team_leaders.all %}
+        <span class="badge badge-warning">Leader</span>
         {% elif request.user in team.invited_members.all %}
         <span class="badge badge-success">Invited</span>
         {% elif request.user in team.team_members.all %}
@@ -77,8 +79,10 @@
         <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
         {% if request.user in team.pending_members.all %}
         <span class="badge badge-warning">Pending Invite</span>
-        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        {% elif request.user == team.creator %}
         <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.team_leaders.all %}
+        <span class="badge badge-warning">Leader</span>
         {% elif request.user in team.invited_members.all %}
         <span class="badge badge-success">Invited</span>
         {% elif request.user in team.team_members.all %}
@@ -121,8 +125,10 @@
         <span class="badge badge-primary">{{team.team_members.count|add:team.team_leaders.count}} Member{% if team.team_members.count|add:team.team_leaders.count != 1 %}s{% endif %}</span>
         {% if request.user in team.pending_members.all %}
         <span class="badge badge-warning">Pending Invite</span>
-        {% elif request.user in team.team_leaders.all or request.user == team.creator %}
+        {% elif request.user == team.creator %}
         <span class="badge badge-warning">Owner</span>
+        {% elif request.user in team.team_leaders.all %}
+        <span class="badge badge-warning">Leader</span>
         {% elif request.user in team.invited_members.all %}
         <span class="badge badge-success">Invited</span>
         {% elif request.user in team.team_members.all %}
@@ -225,6 +231,10 @@
     });
     const json = await res.json();
     btn.textContent = json.error === 10 ? 'Request Sent ✓' : json.message;
+  }
+
+  if(location.hash == "#create") {
+    showCreateTeamModal();
   }
 </script>
 {% endblock extra_scripts %}

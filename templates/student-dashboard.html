@@ -38,9 +38,9 @@
           <div class="item-header">
             <span class="item-title">{{team.name}}</span>
             {% if request.user == team.creator %}
-            <span class="badge badge-warning">Creator</span>
-            {% elif request.user in team.team_leaders.all %}
             <span class="badge badge-warning">Owner</span>
+            {% elif request.user in team.team_leaders.all %}
+            <span class="badge badge-warning">Leader</span>
             {% elif request.user in team.invited_members.all %}
             <span class="badge badge-success">Invited</span>
             {% elif request.user in team.team_members.all %}
@@ -72,40 +72,15 @@
           <div class="item-header">
             <span class="item-title">{{event.title}}</span>
           </div>
-          <div class="item-meta">{{event.date|date:"l, M jS, Y"}} • {{event.start_time}} PM</div>
+          <div class="item-meta">{{event.date|date:"l, M jS, Y"}} • {{event.start_time|date:"g:i A"}}</div>
           <div style="margin-top: 0.75rem;">
-            <button class="btn btn-small btn-primary">
+            <a class="btn btn-small btn-primary" href="{{event.registration_link}}" {% if event.new_tab %}target="_blank"{% endif %}>
               <span>Register</span>
               <div class="btn-glow"></div>
-            </button>
+            </a>
           </div>
         </li>
         {% endfor %}
-        <li class="item">
-          <div class="item-header">
-            <span class="item-title">Spring Hackathon 2026</span>
-          </div>
-          <div class="item-meta">Saturday, Mar 15, 2026 • 9:00 AM</div>
-          <div style="margin-top: 0.75rem;">
-            <button class="btn btn-small btn-primary">
-              <span>Register</span>
-              <div class="btn-glow"></div>
-            </button>
-          </div>
-        </li>
-
-        <li class="item">
-          <div class="item-header">
-            <span class="item-title">ML Project Showcase</span>
-          </div>
-          <div class="item-meta">Friday, Apr 10, 2026 • 5:00 PM</div>
-          <div style="margin-top: 0.75rem;">
-            <button class="btn btn-small btn-primary">
-              <span>Register</span>
-              <div class="btn-glow"></div>
-            </button>
-          </div>
-        </li>
       </ul>
 
       <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="window.location.href='{% url 'website:events' %}'">
@@ -120,12 +95,12 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='{% url 'website:teams' %}'">
+        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='{% url 'website:teams' %}#create'">
           <span>Create New Team</span>
           <div class="btn-glow"></div>
         </button>
 
-        <button class="btn btn-secondary" style="width: 100%;">
+        <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='{% url 'website:teams' %}'">
           Join a Team
         </button>
 
@@ -137,7 +112,7 @@
       <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: 12px;">
         <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Weekly Tip</h3>
         <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
-          Did you know? Team owners can invite members directly by email. Check out the Teams page to send invitations!
+          Did you know? Team owners and leaders can invite members directly by email. Check out the Teams page to send invitations!
         </p>
       </div>
     </div>

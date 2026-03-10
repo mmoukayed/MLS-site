@@ -18,3 +18,5 @@ class Event(models.Model):
     date = models.DateField()
     location = models.CharField()
     image = models.ImageField(default="uploaded_media/events/events_icon.svg", upload_to="uploaded_media/events")
+    registration_link = models.URLField()
+    new_tab = models.BooleanField("Open registration link in new tab?", default=True)
