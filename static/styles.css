@@ -643,8 +643,13 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);  /* ← dim overlay */
+    backdrop-filter: blur(6px);       /* ← blur */
+    -webkit-backdrop-filter: blur(6px); /* ← safari */
 }
-.account-popup-bg[hidden] { display: none; }
+.account-popup-bg { display: flex; }
+.account-popup-bg[hidden] { display: none !important; }
+
 
 /* Transparent clickable backdrop (behind the card) */
 .backdrop-close {
@@ -656,7 +661,7 @@ footer {
 /* ─── Auth Popup Card ────────────────────────────────────────── */
 .account-popup {
     position: relative;
-    z-index: 1;
+    z-index: 1052;
     width: min(480px, 96vw);
     max-height: 90vh;
     overflow-y: auto;

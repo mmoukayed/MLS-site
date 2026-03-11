@@ -23,6 +23,13 @@ def _base_context():
         "nationalities": list(countries),
     }
 
+def _log(action, message):
+    """Lazy import avoids circular dependency: accounts → website."""
+    try:
+        from website.models import ActivityLog
+        ActivityLog.objects.create(action=action, message=message)
+    except Exception:
+        pass
 
 # ════════════════════════════════════════════════════════════════
 #  REQUEST LOGIN  (send OTP / magic link to existing member)
@@ -95,6 +102,10 @@ def magic_login(request):
                 pass
 
         request.session.pop("pending_signup", None)
+        _log(
+            "user_registered",
+            f"New member registered: {member.first_name} {member.last_name} ({member.email})",
+        )
 
     # Mark all unused OTPs for this email as used (link login counts as auth)
     EmailOTP.objects.filter(email=email, is_used=False).update(is_used=True)
@@ -134,7 +145,7 @@ def otp_login(request):
 
     record.is_used = True
     record.save()
-
+    is_new_user = False
     try:
         member = Member.objects.get(email=email)
     except Member.DoesNotExist:
@@ -160,8 +171,14 @@ def otp_login(request):
                 pass
 
         request.session.pop("pending_signup", None)
+        is_new_user = True
 
     login(request, member, backend="django.contrib.auth.backends.ModelBackend")
+    if is_new_user:
+        _log(
+            "user_registered",
+            f"New member registered: {member.first_name} {member.last_name} ({member.email})",
+        )
     return JsonResponse({"message": "Login successful", "redirect": "/"})
 
 
