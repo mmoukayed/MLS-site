@@ -6,6 +6,14 @@ from django.urls import reverse
 
 User = get_user_model()
 
+def _log(action, message):
+    """Lazy import to avoid circular dependency: accounts → website."""
+    try:
+        from website.models import ActivityLog
+        ActivityLog.objects.create(action=action, message=message)
+    except Exception:
+        pass
+
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def pre_social_login(self, request, sociallogin):
@@ -26,11 +34,16 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
 
 
     def save_user(self, request, sociallogin, form=None):
+        is_new = sociallogin.user.pk is None
+
         user = super().save_user(request, sociallogin, form)
 
-        # Detect brand new Google signup
-        if user._state.adding:
+        if is_new:
             request.session["incomplete_profile"] = True
+            _log(
+                "user_registered",
+                f"New member registered via Google: {user.first_name} {user.last_name} ({user.email})",
+            )
 
         return user
 

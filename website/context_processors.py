@@ -1,6 +1,8 @@
 from accounts.models import Major
 from django_countries import countries
 from django.utils import timezone
+from website.models import Event, Team, ActivityLog
+
 
 
 def prereqData(request):
@@ -14,3 +16,5 @@ def prereqData(request):
         "nationalities": list(countries),
         "now":           timezone.now(),   # handy for footer copyright year etc.
     }
+def log_activity(action, message):
+    ActivityLog.objects.create(action=action, message=message)
