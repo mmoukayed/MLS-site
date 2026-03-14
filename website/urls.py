@@ -6,7 +6,8 @@ app_name = "website"
 urlpatterns = [
     path("", views.home, name="home"),
     path("meet-the-team/", views.meet_the_team, name="meet-the-team"),
-    path("dashboard/", views.student_dashboard, name="student_dashboard"),
+    path("dashboard/", views.dashboard_redirect, name="dashboard"),
+    path("student_dashboard/", views.student_dashboard, name="student_dashboard"),
 
     path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("events/", views.student_events, name="events"),

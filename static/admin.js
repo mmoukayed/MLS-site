@@ -235,7 +235,10 @@ function closeViewTeam() {
 const editTeamState = {member: {}, leader: {}};
 let searchTimeout = null;
 
-function openEditTeam(id, name, description, membersJson, leadersJson) {
+function openEditTeam(id, name, description, membersJson , leadersJson ) {
+    membersJson = typeof membersJson === "string" ? JSON.parse(membersJson) : membersJson;
+    leadersJson = typeof leadersJson === "string" ? JSON.parse(leadersJson) : leadersJson;
+
     document.getElementById("edit-team-id").value = id;
     document.getElementById("edit-team-name").value = name;
     document.getElementById("edit-team-desc").value = description;

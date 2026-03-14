@@ -181,8 +181,8 @@
                                                     '{{ t.obj.id }}',
                                                     '{{ t.obj.name|escapejs }}',
                                                     `{{ t.obj.description|escapejs }}`,
-                                                    {{ t.members_json }},
-                                                    {{ t.leaders_json }}
+                                                    '{{ t.members_json|escapejs }}',
+                                                    '{{ t.leaders_json|escapejs }}',
                                                     )">
                                         Edit
                                     </button>
