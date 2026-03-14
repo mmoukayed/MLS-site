@@ -24,6 +24,11 @@ def home(request):
     # prereqData context processor provides majors + nationalities globally
     return render(request, "index.html")
 
+@login_required()
+def dashboard_redirect(request):
+    if request.user.is_staff:
+        return redirect("website:admin_dashboard")
+    return redirect("website:student_dashboard")
 
 def meet_the_team(request):
     return render(request, "meettheteam.html")
@@ -42,10 +47,21 @@ def admin_dashboard(request):
             f"{l.first_name} {l.last_name}" for l in team.team_leaders.all()
         ) or "No leader"
         leaders_list = [
-            f"{l.first_name} {l.last_name}" for l in team.team_leaders.all()
+            {
+                "id": l.id,
+                "name": f"{l.first_name} {l.last_name}",
+                "email": l.email
+            }
+            for l in team.team_leaders.all()
         ]
+
         members_list = [
-            f"{m.first_name} {m.last_name}" for m in team.team_members.all()
+            {
+                "id": m.id,
+                "name": f"{m.first_name} {m.last_name}",
+                "email": m.email
+            }
+            for m in team.team_members.all()
         ]
 
         teams.append({
