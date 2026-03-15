@@ -102,9 +102,9 @@ function startTimer(flow) {
 }
 
 // ─── Google Auth (placeholder) ──────────────────────────────
-function handleGoogleAuth(mode) {
-    showInfo('Google auth coming soon! Please use email for now.');
-}
+//function handleGoogleAuth(mode) {
+//    showInfo('Google auth coming soon! Please use email for now.');
+//}
 
 // ════════════════════════════════════════════════════════════
 //  LOGIN FLOW

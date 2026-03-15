@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block pageTitle %}{% endblock pageTitle %} | RIT Machine Learning Society</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'app-styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="neural-network"></canvas>
+
+
+    <div class="dashboard-content" style="max-width: 800px;">
+        <div class="dashboard-welcome">
+            <h1>Finish Setting Up Your Profile</h1>
+            <p>Please complete your information to get started</p>
+        </div>
+
+        <div class="dashboard-card fade-in visible">
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-input" id="first_name"
+                               value="{{ request.user.first_name }}"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-input" name="last_name" id="last_name"
+                               value="{{ request.user.last_name }}"
+                               required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" class="form-input" name="dob" id="dob"
+                               value="{{ request.user.date_of_birth|date:'Y-m-d' }}"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="graduation_year">Graduation Year:</label>
+                        <input type="number" class="form-input" name="graduation_year" id="graduation_year"
+                               value="{{ request.user.graduation_year }}" min="2024" max="2035"
+                               required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" class="form-select" id="gender" required>
+                        <option value="" disabled {% if not request.user.gender %}selected{% endif %}>Select Gender</option>
+                        <option value="M" {% if request.user.gender == "M" %}selected{% endif %}>Male</option>
+                        <option value="F" {% if request.user.gender == "F" %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="major">Major / Field of Study</label>
+                    <select name="field_of_study" class="form-select" id="major" required>
+                        <option value="" disabled {% if not request.user.major %}selected{% endif %}>Select Major</option>
+                        {% for major in majors %}
+                            <option value="{{ major.pk }}"
+                                    {% if request.user.major and request.user.major.pk == major.pk %}selected{% endif %}>{{ major }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nationality" class="form-label">Nationality</label>
+                    <select name="nationality" id="nationality" class="form-select" required>
+                        <option value="" disabled {% if not request.user.nationality %}selected{% endif %}>Select Nationality</option>
+                        {% for code, name in nationalities %}
+                            <option value="{{ code }}"
+                                    {% if request.user.nationality.code == code %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Complete Profile</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

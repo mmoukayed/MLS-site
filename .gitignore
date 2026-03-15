@@ -6,3 +6,6 @@ __pycache__/
 db.sqlite3
 .idea/
 .vscode/
+client_secret.json
+__pycache__/
+*.pyc
