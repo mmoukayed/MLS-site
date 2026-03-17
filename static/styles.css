@@ -664,8 +664,13 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);  /* ← dim overlay */
+    backdrop-filter: blur(6px);       /* ← blur */
+    -webkit-backdrop-filter: blur(6px); /* ← safari */
 }
-.account-popup-bg[hidden] { display: none; }
+.account-popup-bg { display: flex; }
+.account-popup-bg[hidden] { display: none !important; }
+
 
 /* Transparent clickable backdrop (behind the card) */
 .backdrop-close {
@@ -677,7 +682,7 @@ footer {
 /* ─── Auth Popup Card ────────────────────────────────────────── */
 .account-popup {
     position: relative;
-    z-index: 1;
+    z-index: 1052;
     width: min(480px, 96vw);
     max-height: 90vh;
     overflow-y: auto;
@@ -712,6 +717,23 @@ footer {
     margin-bottom: 6px;
 }
 .popup-sub { color: var(--text-secondary); font-size: 0.9rem; }
+
+/* Wide popup for events (create/edit/view) */
+.account-popup.wide {
+    width: min(820px, 96vw);
+}
+
+/* Grid layout inside wide popup */
+.event-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
+}
+
+.event-grid-full {
+    grid-column: span 2;
+}
 
 /* ─── Columnizer (flex column inside popup) ──────────────────── */
 .columnizer {
@@ -975,4 +997,9 @@ select.login-box { border-radius: 14px; cursor: pointer; }
     .navbar nav a:not(.nav-signin-btn) { display: none; }
     .hero-title { font-size: 2rem; }
     .otp-digit  { width: 40px; height: 50px; font-size: 1.3rem; }
+}
+
+.active-filter {
+    background: var(--accent) !important;
+    color: #fff !important;
 }

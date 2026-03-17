@@ -3,223 +3,1010 @@
 {% block pageTitle %}Admin Dashboard{% endblock pageTitle %}
 {% block content %}
 
-<div class="dashboard-content">
-  <div class="dashboard-welcome">
-    <h1>Admin Dashboard</h1>
-    <p>Manage users, teams, events, and landing page content</p>
-  </div>
-
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card fade-in visible">
-      <div class="stat-value">247</div>
-      <div class="stat-label">Total Users</div>
-    </div>
-    <div class="stat-card fade-in visible">
-      <div class="stat-value">18</div>
-      <div class="stat-label">Active Teams</div>
-    </div>
-    <div class="stat-card fade-in visible">
-      <div class="stat-value">12</div>
-      <div class="stat-label">Upcoming Events</div>
-    </div>
-    <div class="stat-card fade-in visible">
-      <div class="stat-value">94%</div>
-      <div class="stat-label">Engagement Rate</div>
-    </div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="showAdminTab('overview')">Overview</button>
-    <button class="tab" onclick="showAdminTab('users')">Users</button>
-    <button class="tab" onclick="showAdminTab('teams')">Teams</button>
-    <button class="tab" onclick="showAdminTab('events')">Events</button>
-    <button class="tab" onclick="showAdminTab('cms')">Landing Page CMS</button>
-  </div>
-
-  <!-- Overview Tab -->
-  <div id="overview-tab">
-    <div class="dashboard-grid">
-      <div class="dashboard-card fade-in visible">
-        <h3 class="dashboard-card-title">Quick Actions</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-          <button class="btn btn-primary" style="width: 100%;" onclick="showAdminTab('events')">
-            <span>+ Create Event</span>
-            <div class="btn-glow"></div>
-          </button>
-          <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('cms')">
-            Edit Landing Page
-          </button>
-          <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('users')">
-            Manage Users
-          </button>
-        </div>
-      </div>
-
-      <div class="dashboard-card fade-in visible">
-        <h3 class="dashboard-card-title">Recent Activity</h3>
-        <ul class="item-list" style="margin-top: 1rem;">
-          <li class="item">
-            <div class="item-meta">5 minutes ago</div>
-            <div class="item-title" style="font-size: 0.95rem;">New user registered: Sarah Johnson</div>
-          </li>
-          <li class="item">
-            <div class="item-meta">1 hour ago</div>
-            <div class="item-title" style="font-size: 0.95rem;">Team created: NLP Projects</div>
-          </li>
-          <li class="item">
-            <div class="item-meta">3 hours ago</div>
-            <div class="item-title" style="font-size: 0.95rem;">Event registered: 15 new attendees</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Users Tab (hidden by default) -->
-  <div id="users-tab" style="display: none;">
-    <div class="dashboard-card fade-in visible">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 class="dashboard-card-title">All Users</h3>
-        <input type="text" class="form-input" placeholder="Search users..." style="max-width: 300px;">
-      </div>
-      <ul class="item-list">
-        <li class="item">
-          <div class="item-header">
-            <div>
-              <span class="item-title">John Doe</span>
-              <div class="item-meta">john.doe@rit.edu • Computer Science '26</div>
-            </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <span class="badge badge-primary">Student</span>
-              <button class="btn btn-small btn-secondary">Edit Role</button>
-            </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="item-header">
-            <div>
-              <span class="item-title">Sarah Johnson</span>
-              <div class="item-meta">sarah.johnson@rit.edu • Data Science '25</div>
-            </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <span class="badge badge-warning">Admin</span>
-              <button class="btn btn-small btn-secondary">Edit Role</button>
-            </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="item-header">
-            <div>
-              <span class="item-title">Michael Chen</span>
-              <div class="item-meta">michael.chen@rit.edu • AI Engineering '26</div>
-            </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <span class="badge badge-primary">Student</span>
-              <button class="btn btn-small btn-secondary">Edit Role</button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Events Tab (hidden by default) -->
-  <div id="events-tab" style="display: none;">
-    <div class="dashboard-card fade-in visible">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 class="dashboard-card-title">Manage Events</h3>
-        <button class="btn btn-primary" onclick="alert('Create event form would open')">
-          <span>+ Create Event</span>
-          <div class="btn-glow"></div>
-        </button>
-      </div>
-      <ul class="item-list">
-        <li class="item">
-          <div class="item-header">
-            <div>
-              <span class="item-title">Introduction to Neural Networks</span>
-              <div class="item-meta">Friday, Feb 21, 2026 • 6:00 PM • GOL-2590</div>
-            </div>
-            <div class="item-actions">
-              <button class="btn btn-small btn-secondary">Edit</button>
-              <button class="btn btn-small btn-danger">Delete</button>
-            </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="item-header">
-            <div>
-              <span class="item-title">Spring Hackathon 2026</span>
-              <div class="item-meta">Saturday, Mar 15, 2026 • 9:00 AM • GCCIS</div>
-            </div>
-            <div class="item-actions">
-              <button class="btn btn-small btn-secondary">Edit</button>
-              <button class="btn btn-small btn-danger">Delete</button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- CMS Tab (hidden by default) -->
-  <div id="cms-tab" style="display: none;">
-    <div class="dashboard-card fade-in visible">
-      <h3 class="dashboard-card-title">Edit Landing Page Content</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-        Update the content shown on the public landing page
-      </p>
-
-      <form onsubmit="event.preventDefault(); alert('Landing page updated!');">
-        <h4 style="margin-bottom: 1rem; color: var(--accent);">Hero Section</h4>
-        <div class="form-group">
-          <label class="form-label">Main Heading</label>
-          <input type="text" class="form-input" value="Machine Learning Society">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subheading</label>
-          <input type="text" class="form-input" value="Rochester Institute of Technology">
-        </div>
-        <div class="form-group">
-          <label class="form-label">CTA Button Text</label>
-          <input type="text" class="form-input" value="Join the Community">
+    <div class="dashboard-content">
+        <div class="dashboard-welcome">
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, teams, events, and landing page content</p>
         </div>
 
-        <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--neural-line);">
-
-        <h4 style="margin-bottom: 1rem; color: var(--accent);">About Section</h4>
-        <div class="form-group">
-          <label class="form-label">About Text</label>
-          <textarea class="form-input" rows="4">The Machine Learning Society at RIT is a student-led community passionate about artificial intelligence, data science, and real-world problem solving.</textarea>
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card fade-in visible">
+                <div class="stat-value">{{ user_count }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card fade-in visible">
+                <div class="stat-value">{{ team_count }}</div>
+                <div class="stat-label">Active Teams</div>
+            </div>
+            <div class="stat-card fade-in visible">
+                <div class="stat-value">{{ event_count }}</div>
+                <div class="stat-label">Upcoming Events</div>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
-          <span>Save Changes</span>
-          <div class="btn-glow"></div>
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showAdminTab('overview', event)">Overview</button>
+            <button class="tab" onclick="showAdminTab('users', event)">Users</button>
+            <button class="tab" onclick="showAdminTab('teams', event)">Teams</button>
+            <button class="tab" onclick="showAdminTab('events', event)">Events</button>
+            <button class="tab" onclick="showAdminTab('content', event)">Content</button>
+            {% if request.user.is_superuser %}
+                <button class="tab" onclick="showAdminTab('cms', event)">Landing Page CMS</button>
+            {% endif %}
+        </div>
 
-<script src="{% static "script.js" %}"></script>
-<script>
-  function showAdminTab(tab) {
-    // Hide all tabs
-    document.getElementById('overview-tab').style.display = 'none';
-    document.getElementById('users-tab').style.display = 'none';
-    document.getElementById('events-tab').style.display = 'none';
-    document.getElementById('cms-tab').style.display = 'none';
-    
-    // Show selected tab
-    document.getElementById(tab + '-tab').style.display = 'block';
-    
-    // Update active tab button
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-  }
-</script>
+        <!-- Overview Tab -->
+        <div id="overview-tab">
+            <div class="dashboard-grid">
+                <div class="dashboard-card fade-in visible">
+                    <h3 class="dashboard-card-title">Quick Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openEventPopup()">
+                            <span>+ Create Event</span>
+                            <div class="btn-glow"></div>
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('cms', null)">
+                            Edit Landing Page
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showAdminTab('users', null)">
+                            Manage Users
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-card fade-in visible">
+                    <h3 class="dashboard-card-title">Recent Activity</h3>
+                    <ul class="item-list" style="margin-top: 1rem;">
+                        {% for log in activity %}
+                            <li class="item">
+                                <div class="item-meta">{{ log.timestamp|timesince }} ago</div>
+                                <div class="item-title" style="font-size: 0.95rem;">{{ log.message }}</div>
+                            </li>
+                        {% empty %}
+                            <li class="item">
+                                <div class="item-meta">No activity yet</div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab (hidden by default) -->
+        <div id="users-tab" style="display: none;">
+            <div class="dashboard-card fade-in visible">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 class="dashboard-card-title">All Users</h3>
+                    <input type="text" id="user-search" class="form-input" placeholder="Search users..."
+                           style="max-width: 300px;">
+
+                </div>
+                <ul class="item-list">
+                    {% for member in members %}
+                        <li class="item">
+                            <div class="item-header">
+                                <div>
+                                    <span class="item-title">{{ member.first_name }} {{ member.last_name }}</span>
+                                    <div class="item-meta">{{ member.email }} • {{ member.major }}
+                                        {% if member.graduation_year %}{{ member.graduation_year }}{% endif %}</div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="badge badge-primary">
+                                        {% if member.is_staff %}Staff{% else %}Student{% endif %}
+                                    </span>
+                                    {% if request.user == member %}
+                                        <span class="badge badge-primary">YOU</span>
+                                    {% endif %}
+                                    {% if request.user != member %}
+                                        <button class="btn btn-small btn-secondary"
+                                                onclick="openRolePopup('{{ member.email }}', {{ member.is_staff|yesno:'true,false' }}, '{{ member.first_name }}')">
+                                            Edit Role
+                                        </button>
+                                        <button class="btn btn-small btn-danger"
+                                                onclick="openDeletePopup('{{ member.email }}','{{ member.first_name }}')">
+                                            Delete
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="item">
+                            <div class="item-header">
+                                No users found.
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Teams Tab (hidden by default) -->
+        <div id="teams-tab" style="display: none;">
+            <div class="dashboard-card fade-in visible">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h3 class="dashboard-card-title">All Teams</h3>
+                    <input type="text" class="form-input" id="team-search"
+                           placeholder="Search teams..." style="max-width:300px;"
+                           onkeyup="filterTeams()">
+                </div>
+
+                <!-- Filter pills -->
+                <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem;">
+                    <button class="btn btn-small btn-secondary active-filter"
+                            onclick="filterTeamStatus('all', this)">All
+                    </button>
+                    <button class="btn btn-small btn-secondary"
+                            onclick="filterTeamStatus('active', this)">Has Members
+                    </button>
+                    <button class="btn btn-small btn-secondary"
+                            onclick="filterTeamStatus('empty', this)">Empty
+                    </button>
+                </div>
+
+                <ul class="item-list" id="teams-list">
+                    {% for t in teams %}
+                        <li class="item team-item"
+                            data-members="{{ t.member_count }}"
+                            data-search="{{ t.obj.name|lower }} {{ t.obj.description|lower }}">
+                            <div class="item-header">
+
+                                <div class="item-info"
+                                     onclick="openViewTeam(
+                                             '{{ t.obj.name|escapejs }}',
+                                             `{{ t.obj.description|escapejs }}`,
+                                             {{ t.member_count }},
+                                             {{ t.leader_count }},
+                                             '{{ t.leaders_str|escapejs }}',
+                                             {{ t.leaders_json }},
+                                             {{ t.members_json }}
+                                             )"
+                                     style="cursor:pointer; min-width:0; flex:1;">
+                                    <span class="item-title">{{ t.obj.name }}</span>
+                                    <div class="item-meta">
+                                        {{ t.member_count }} member{{ t.member_count|pluralize }}
+                                        • Led by: {{ t.leaders_str }}
+                                    </div>
+                                </div>
+
+                                <div class="item-actions"
+                                     style="display:flex; gap:0.5rem; flex-shrink:0; align-items:center;">
+                <span class="badge badge-primary">
+                    {% if t.member_count > 0 %}Active{% else %}Empty{% endif %}
+                </span>
+                                    <button class="btn btn-small btn-secondary"
+                                            onclick="openEditTeam(
+                                                    '{{ t.obj.id }}',
+                                                    '{{ t.obj.name|escapejs }}',
+                                                    `{{ t.obj.description|escapejs }}`,
+                                                    '{{ t.members_json|escapejs }}',
+                                                    '{{ t.leaders_json|escapejs }}',
+                                                    )">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-small btn-danger"
+                                            onclick="openDeleteTeam('{{ t.obj.id }}', '{{ t.obj.name|escapejs }}')">
+                                        Delete
+                                    </button>
+                                </div>
+
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="item">
+                            <div class="item-header">
+                                <span class="item-title">No teams found.</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- Events tab (hidden by default) -->
+        <div id="events-tab" style="display: none;">
+            <div class="dashboard-card fade-in visible">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 class="dashboard-card-title">Manage Events</h3>
+                    <button class="btn btn-primary" onclick="openEventPopup()">
+                        <span>+ Create Event</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+                <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem;">
+                    <button class="btn btn-small btn-secondary event-filter active-event-filter"
+                            onclick="filterEvents('all', this)">All
+                    </button>
+                    <button class="btn btn-small btn-secondary event-filter"
+                            onclick="filterEvents('upcoming', this)">Upcoming
+                    </button>
+                    <button class="btn btn-small btn-secondary event-filter"
+                            onclick="filterEvents('past', this)">Past
+                    </button>
+                </div>
+                <ul class="item-list">
+                    {% for event in events %}
+                        <li class="item" data-date="{{ event.date|date:'Y-m-d' }}">
+                            <div class="item-header">
+                                <!-- FIX #8: Thumbnail + separate clickable info area -->
+                                <div style="display:flex; align-items:center; gap:0.75rem; flex:1; min-width:0;">
+                                    <div class="item-info"
+                                         onclick="openViewEvent(
+                                                 '{{ event.title|escapejs }}',
+                                                 `{{ event.details|escapejs }}`,
+                                                 '{{ event.date }}',
+                                                 '{{ event.start_time|time:"H:i" }}',
+                                                 '{{ event.end_time|time:"H:i" }}',
+                                                 '{{ event.location|escapejs }}',
+                                                 '{% if event.image %}{{ event.image.url }}{% else %}{% endif %}'
+                                                 )"
+                                         style="cursor:pointer; min-width:0;">
+                                        <span class="item-title">{{ event.title }}</span>
+                                        <div class="item-meta">
+                                            {{ event.date }} • {{ event.start_time|time:"g:i A" }}
+                                            • {{ event.location }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FIX #4: Delete button properly connected -->
+                                <div class="item-actions" style="flex-shrink:0;">
+                                    <button class="btn btn-small btn-secondary"
+                                            onclick="openEditEvent(
+                                                    '{{ event.id }}',
+                                                    '{{ event.title|escapejs }}',
+                                                    `{{ event.details|escapejs }}`,
+                                                    '{{ event.start_time|time:"H:i" }}',
+                                                    '{{ event.end_time|time:"H:i" }}',
+                                                    '{{ event.date|date:"Y-m-d" }}',
+                                                    '{{ event.location|escapejs }}'
+                                                    )">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-small btn-danger"
+                                            onclick="openDeleteEvent('{{ event.id }}', '{{ event.title|escapejs }}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="item">
+                            <div class="item-header">
+                                <span class="item-title">No events created yet</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Content Tab -->
+        <div id="content-tab" style="display:none;">
+            <div class="dashboard-card fade-in visible">
+
+                <!-- header row -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h3 class="dashboard-card-title">Workshop Content</h3>
+                    <button class="btn btn-primary" onclick="openNewDraft()">
+                        <span>+ New Draft</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+
+                <!-- status filter pills — no counts -->
+                <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+                    <button class="btn btn-small btn-secondary content-filter active-content-filter"
+                            onclick="setContentTab('published', this)">Published
+                    </button>
+                    <button class="btn btn-small btn-secondary content-filter"
+                            onclick="setContentTab('draft', this)">Drafts
+                    </button>
+                    <button class="btn btn-small btn-secondary content-filter"
+                            onclick="setContentTab('archived', this)">Archived
+                    </button>
+                </div>
+
+                <!-- search + course + type filter -->
+                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; margin-bottom:1rem;">
+                    <input class="form-input" id="contentSearch"
+                           placeholder="Search workshops, tags..."
+                           style="flex:1; min-width:200px;">
+                    <select class="form-input" id="contentFilterType" style="max-width:160px;">
+                        <option value="">All Types</option>
+                        <option value="Presentation">Presentation</option>
+                        <option value="Document">Document</option>
+                        <option value="Video">Video</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+                    <span style="font-size:.8rem; font-weight:600; color:var(--text-secondary);">Sort:</span>
+                    <button class="btn btn-small btn-secondary content-sort active-content-sort" data-sort="date">
+                        Newest
+                    </button>
+                    <button class="btn btn-small btn-secondary content-sort" data-sort="title">A-Z</button>
+                    <button class="btn btn-small btn-secondary content-sort" data-sort="mine">By You</button>
+                    <span id="contentResultCount"
+                          style="margin-left:auto; font-size:11px; color:var(--text-secondary);"></span>
+                </div>
+
+                <!-- bulk action bar -->
+                <div id="contentBulkBar" style="display:none; align-items:center; gap:0.75rem; flex-wrap:wrap;
+                     padding:0.75rem 1rem; background:var(--bg-secondary); border:1px solid var(--accent);
+                     border-radius:12px; margin-bottom:1rem;">
+                    <span id="contentBulkCount" style="font-weight:700; color:var(--accent); font-size:.85rem;">0 selected</span>
+                    <button class="btn btn-small btn-secondary" id="bulkPublish">Publish</button>
+                    <button class="btn btn-small btn-secondary" id="bulkArchive">Archive</button>
+                    <button class="btn btn-small btn-danger" id="bulkDelete">Delete</button>
+                    <button class="btn btn-small btn-secondary" id="bulkClear" style="margin-left:auto;">Clear</button>
+                </div>
+
+                <!-- item list rendered by JS -->
+                <ul class="item-list" id="contentItemList"></ul>
+
+            </div>
+        </div>
+
+        <!-- CMS Tab (hidden by default) -->
+        {% if request.user.is_superuser %}
+            <div id="cms-tab" style="display: none;">
+                <div class="dashboard-card fade-in visible">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h3 class="dashboard-card-title">Edit Landing Page Content</h3>
+                        <a href="/admin/" target="_blank"
+                           style="display:flex; align-items:center; gap:6px; padding:7px 14px;
+                              border:1px solid var(--neural-line); border-radius:8px;
+                              font-size:.8rem; font-weight:700; color:var(--accent);
+                              text-decoration:none; transition:border-color .2s, background .2s;"
+                           onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(249,115,22,.07)'"
+                           onmouseout="this.style.borderColor='var(--neural-line)';this.style.background=''">
+                            ⚙ Switch to Django Admin
+                        </a>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Update the content shown on the public landing page
+                    </p>
+
+                    <form onsubmit="event.preventDefault(); alert('Landing page updated!');">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent);">Hero Section</h4>
+                        <div class="form-group">
+                            <label class="form-label">Main Heading</label>
+                            <input type="text" class="form-input" value="Machine Learning Society">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subheading</label>
+                            <input type="text" class="form-input" value="Rochester Institute of Technology">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CTA Button Text</label>
+                            <input type="text" class="form-input" value="Join the Community">
+                        </div>
+
+                        <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--neural-line);">
+
+                        <h4 style="margin-bottom: 1rem; color: var(--accent);">About Section</h4>
+                        <div class="form-group">
+                            <label class="form-label">About Text</label>
+                            <textarea class="form-input" rows="4">The Machine Learning Society at RIT is a student-led community passionate about artificial intelligence, data science, and real-world problem solving.</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                            <span>Save Changes</span>
+                            <div class="btn-glow"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            </div><!-- /cms-tab -->
+        {% endif %}
+
+    </div><!-- /.dashboard-content -->
+
+    <!-- Toast container -->
+    <div id="cmsToasts"
+         style="position:fixed; top:76px; right:20px; z-index:1000; display:flex; flex-direction:column; gap:7px; pointer-events:none;"></div>
+
+
+    <!--POP-UPS-->
+
+    <!--ROLE POPUP-->
+    <div class="account-popup-bg" id="role-popup-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup" id="role-popup" hidden onsubmit="submitRoleChange(event)" method="POST"
+              action="{% url 'admin:edit_role' %}">
+            <div class="popup-header">
+                <h1>Edit Role</h1>
+                <p class="popup-sub">Change the role for <strong id="role-user-name"></strong></p>
+            </div>
+            {% csrf_token %}
+
+            <input type="hidden" id="role-user-email" name="email">
+
+            <div class="columnizer">
+                <label>
+                    <select class="login-box" name="is_staff" id="role-select" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="False">Student</option>
+                        <option value="True">Staff</option>
+                    </select>
+                </label>
+                <button class="login-btn primary-btn" type="submit">
+                    <span class="btn-text">Save Role</span>
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeRolePopup()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+
+        <div class="backdrop-close" onclick="closeRolePopup()"></div>
+    </div>
+    <!-- DELETE USER POPUP-->
+    <div class="account-popup-bg" id="delete-popup-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup" id="delete-popup" hidden onsubmit="submitDelete(event)" method="POST"
+              action="{% url 'admin:delete_member' %}">
+
+            <div class="popup-header">
+                <h1>Delete User</h1>
+                <p class="popup-sub">
+                    Are you sure you want to delete <strong id="delete-user-name"></strong>?
+                </p>
+            </div>
+
+            {% csrf_token %}
+
+            <input type="hidden" id="delete-user-email" name="email">
+
+            <div class="columnizer">
+
+                <button class="login-btn primary-btn" type="submit">
+                    Delete User
+                </button>
+
+                <button type="button" class="login-btn btn-secondary" onclick="closeDeletePopup()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="backdrop-close" onclick="closeDeletePopup()"></div>
+    </div>
+    <!-- CREATE EVENT POPUP-->
+    <div class="account-popup-bg" id="create-event-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup wide"
+              id="create-event-popup"
+              hidden
+              method="POST"
+              action="{% url 'admin:create_event' %}"
+              enctype="multipart/form-data">
+            <div class="popup-header">
+                <h1>Create Event</h1>
+                <p class="popup-sub">Add a new event to the system</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <label>
+                    <input class="form-input" name="title" placeholder="Event Title" required>
+                </label>
+                <label>
+                    <textarea class="form-input" name="details" placeholder="Event Details"></textarea>
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Start Time</span>
+                        <input type="time" class="form-input" name="start_time" required>
+                    </label>
+                    <label>
+                        <span class="form-label">End Time</span>
+                        <input type="time" class="form-input" name="end_time" required>
+                    </label>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Date</span>
+                        <input type="date" class="form-input" name="date" required>
+                    </label>
+                    <label>
+                        <span class="form-label">Location</span>
+                        <input class="form-input" name="location" placeholder="Location" required>
+                    </label>
+                </div>
+                <label>
+                    <span class="form-label">Upload Picture</span>
+                    <input type="file" class="form-input" name="image">
+                </label>
+                <button class="login-btn primary-btn" type="submit">
+                    Create Event
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEventPopup()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEventPopup()"></div>
+    </div>
+
+    <!-- EDIT EVENT POPUP -->
+    <div class="account-popup-bg" id="edit-event-bg" hidden aria-modal="true" role="dialog">
+        <form class="account-popup wide"
+              id="edit-event-popup"
+              hidden
+              method="POST"
+              action="{% url 'admin:edit_event' %}"
+              enctype="multipart/form-data">
+            <div class="popup-header">
+                <h1>Edit Event</h1>
+                <p class="popup-sub">Edit existing event</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <input type="hidden" name="event_id" id="edit-event-id">
+                <label>
+                    <input class="form-input" name="title" placeholder="Event Title" required>
+                </label>
+                <label>
+                    <textarea class="form-input" name="details" placeholder="Event Details"></textarea>
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Start Time</span>
+                        <input type="time" class="form-input" name="start_time" required>
+                    </label>
+                    <label>
+                        <span class="form-label">End Time</span>
+                        <input type="time" class="form-input" name="end_time" required>
+                    </label>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <label>
+                        <span class="form-label">Date</span>
+                        <input type="date" class="form-input" name="date" required>
+                    </label>
+                    <label>
+                        <span class="form-label">Location</span>
+                        <input class="form-input" name="location" placeholder="Location" required>
+                    </label>
+                </div>
+                <label>
+                    <span class="form-label">Upload Picture</span>
+                    <input type="file" class="form-input" name="image">
+                </label>
+                <button class="login-btn primary-btn" type="submit">
+                    Edit Event
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEditEvent()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEditEvent()"></div>
+    </div>
+
+    <!-- View Event Popup -->
+    <div class="account-popup-bg" id="view-event-bg" hidden>
+        <div class="account-popup wide" id="view-event-popup" hidden>
+            <div class="popup-header">
+                <h1 id="view-title"></h1>
+                <p class="popup-sub" id="view-date"></p>
+            </div>
+            <div class="columnizer">
+                <img id="view-image" style="width:100%;border-radius:12px;max-height:260px;object-fit:cover;" alt="">
+                <p id="view-details" style="text-align:center;color:var(--text-secondary);"></p>
+                <div class="event-grid" style="display: flex; justify-content: space-evenly">
+                    <div>
+                        <strong>Start</strong>
+                        <p id="view-start"></p>
+                    </div>
+                    <div>
+                        <strong>End</strong>
+                        <p id="view-end"></p>
+                    </div>
+                    <div class="event-grid-full">
+                        <strong>Location</strong>
+                        <p id="view-location"></p>
+                    </div>
+                </div>
+                <button class="login-btn btn-secondary" onclick="closeViewEvent()">Close</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeViewEvent()"></div>
+    </div>
+
+    <!-- DELETE EVENT POPUP -->
+    <div class="account-popup-bg" id="delete-event-bg" hidden>
+        <form class="account-popup" id="delete-event-popup" hidden
+              onsubmit="submitDeleteEvent(event)"
+              method="POST"
+              action="{% url 'admin:delete_event' %}">
+            <div class="popup-header">
+                <h2>Delete Event</h2>
+                <p class="popup-sub">Delete <strong id="delete-event-title"></strong>?</p>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="event_id" id="delete-event-id">
+            <div class="columnizer">
+                <button class="login-btn primary-btn" type="submit">Delete Event</button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeDeleteEvent()">Cancel</button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeDeleteEvent()"></div>
+    </div>
+
+    <!-- View Team Popup -->
+    <div class="account-popup-bg" id="view-team-bg" hidden>
+        <div class="account-popup wide" id="view-team-popup" hidden>
+            <div class="popup-header">
+                <h1 id="vt-name"></h1>
+                <p class="popup-sub" id="vt-leaders"></p>
+            </div>
+            <div class="columnizer">
+                <p id="vt-description" style="color:var(--text-secondary); text-align:center;"></p>
+
+                <div class="event-grid">
+                    <div>
+                        <strong>Members (<span id="vt-members"></span>)</strong>
+                        <ul id="vt-members-list" style="margin-top:0.5rem; padding:0; list-style:none;
+                        display:flex; flex-direction:column; gap:0.35rem;"></ul>
+                    </div>
+                    <div>
+                        <strong>Leaders (<span id="vt-leader-count"></span>)</strong>
+                        <ul id="vt-leaders-list" style="margin-top:0.5rem; padding:0; list-style:none;
+                        display:flex; flex-direction:column; gap:0.35rem;"></ul>
+                    </div>
+                </div>
+
+                <button class="login-btn btn-secondary" onclick="closeViewTeam()">Close</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeViewTeam()"></div>
+    </div>
+
+    <!-- Edit Team Popup -->
+    <div class="account-popup-bg" id="edit-team-bg" hidden>
+        <form class="account-popup wide" id="edit-team-popup" hidden
+              method="POST" action="{% url 'admin:edit_team' %}">
+            <div class="popup-header">
+                <h1>Edit Team</h1>
+                <p class="popup-sub">Update team details, members and leaders</p>
+            </div>
+            {% csrf_token %}
+            <div class="columnizer">
+                <input type="hidden" name="team_id" id="edit-team-id">
+
+                <label>
+                    <input class="form-input" name="name" id="edit-team-name"
+                           placeholder="Team Name" required>
+                </label>
+                <label>
+                <textarea class="form-input" name="description" id="edit-team-desc"
+                          placeholder="Description" rows="3"></textarea>
+                </label>
+
+                <hr style="border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+                <div style="display: flex;justify-content: space-between;gap: 3vw">
+                    <!-- Members picker -->
+                    <div>
+                        <strong style="color:var(--text-primary);">Members</strong>
+                        <div style="position:relative; margin-top:0.5rem;">
+                            <input class="form-input" id="member-search-input"
+                                   placeholder="Search by name or email..."
+                                   autocomplete="off"
+                                   oninput="liveSearch('member')">
+                            <ul id="member-search-results"
+                                style="display:none; position:absolute; top:100%; left:0; right:0;
+                               background:var(--card-bg); border:1px solid var(--neural-line);
+                               border-radius:8px; z-index:100; max-height:180px; overflow-y:auto;
+                               padding:0.25rem 0; margin:0; list-style:none; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                            </ul>
+                        </div>
+                        <!-- selected members appear here -->
+                        <div id="selected-members"
+                             style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem;"></div>
+                        <!-- hidden inputs submitted with form -->
+                        <div id="member-hidden-inputs"></div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+
+                    <!-- Leaders picker -->
+                    <div>
+                        <strong style="color:var(--text-primary);">Leaders</strong>
+                        <div style="position:relative; margin-top:0.5rem;">
+                            <input class="form-input" id="leader-search-input"
+                                   placeholder="Search by name or email..."
+                                   autocomplete="off"
+                                   oninput="liveSearch('leader')">
+                            <ul id="leader-search-results"
+                                style="display:none; position:absolute; top:100%; left:0; right:0;
+                               background:var(--card-bg); border:1px solid var(--neural-line);
+                               border-radius:8px; z-index:100; max-height:180px; overflow-y:auto;
+                               padding:0.25rem 0; margin:0; list-style:none; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                            </ul>
+                        </div>
+                        <div id="selected-leaders"
+                             style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem;"></div>
+                        <div id="leader-hidden-inputs"></div>
+                    </div>
+                </div>
+
+                <button class="login-btn primary-btn" type="submit">
+                    Save Changes
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeEditTeam()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeEditTeam()"></div>
+    </div>
+
+    <!-- Delete Team Popup -->
+    <div class="account-popup-bg" id="delete-team-bg" hidden>
+        <form class="account-popup" id="delete-team-popup" hidden
+              onsubmit="submitDeleteTeam(event)"
+              method="POST" action="{% url 'admin:admin_delete_team' %}">
+            <div class="popup-header">
+                <h2>Delete Team</h2>
+                <p class="popup-sub">Delete <strong id="delete-team-title"></strong>?
+                    This cannot be undone.</p>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="team_id" id="delete-team-id">
+            <div class="columnizer">
+                <button class="login-btn primary-btn" type="submit">Delete Team</button>
+                <button type="button" class="login-btn btn-secondary"
+                        onclick="closeDeleteTeam()">Cancel
+                </button>
+            </div>
+        </form>
+        <div class="backdrop-close" onclick="closeDeleteTeam()"></div>
+    </div>
+
+    <!-- CONTENT TAB POPUPS -->
+
+    <!-- Edit Workshop Popup -->
+    <div class="account-popup-bg" id="content-edit-bg" hidden aria-modal="true" role="dialog">
+        <div class="account-popup wide" id="content-edit-popup" hidden style="max-height:90vh; overflow-y:auto;">
+            <div class="popup-header">
+                <h1 id="contentEditTitle">Edit Workshop</h1>
+                <p class="popup-sub">Update workshop details and materials</p>
+            </div>
+            <div class="columnizer">
+                <label style="display:flex; flex-direction:column; gap:6px; width:100%;">
+                    <span class="form-label">Status</span>
+                    <select class="form-input" id="eField_status">
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </label>
+                <label style="width:100%;">
+                    <span class="form-label">Workshop Title *</span>
+                    <input type="text" class="form-input" id="eField_title" placeholder="e.g. Intro to Backpropagation">
+                </label>
+                <label style="width:100%;">
+                    <span class="form-label">Module / Topic</span>
+                    <input type="text" class="form-input" id="eField_module"
+                           placeholder="e.g. Module 3: Gradient Descent">
+                </label>
+                <label style="width:100%;">
+                    <span class="form-label">Description</span>
+                    <textarea class="form-input" id="eField_desc" rows="3"
+                              placeholder="Brief description..."></textarea>
+                </label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="form-label">Tags (comma-separated)</span>
+                        <input type="text" class="form-input" id="eField_tags" placeholder="backprop, neural-net">
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="form-label">Version</span>
+                        <input type="text" class="form-input" id="eField_version" placeholder="1.0">
+                    </label>
+                </div>
+
+                <hr style="width:100%; border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+
+                <!-- Workshop Files -->
+                <div style="width:100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <span class="form-label" style="margin:0;">Workshop Files</span>
+                        <small style="color:var(--text-secondary);">Drag & drop or click to add</small>
+                    </div>
+                    <div id="eFileList"
+                         style="display:flex; flex-direction:column; gap:6px; margin-bottom:0.75rem; min-height:12px;"></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <label class="content-upload-zone">
+                            <span><strong style="font-size:11px;">Documents</strong><small
+                                    style="display:block; font-size:9px; color:var(--text-secondary);">PDF, DOC — 50 MB</small></span>
+                            <input type="file" id="eUpload_doc" multiple accept=".pdf,.doc,.docx" style="display:none;">
+                        </label>
+                        <label class="content-upload-zone">
+                            <span><strong style="font-size:11px;">Presentations</strong><small
+                                    style="display:block; font-size:9px; color:var(--text-secondary);">PPT — 100 MB</small></span>
+                            <input type="file" id="eUpload_ppt" multiple accept=".ppt,.pptx" style="display:none;">
+                        </label>
+                        <label class="content-upload-zone">
+                            <span><strong style="font-size:11px;">Videos</strong><small
+                                    style="display:block; font-size:9px; color:var(--text-secondary);">MP4 — 500 MB</small></span>
+                            <input type="file" id="eUpload_vid" multiple accept=".mp4,.mov,.avi" style="display:none;">
+                        </label>
+                        <label class="content-upload-zone">
+                            <span><strong style="font-size:11px;">Other Resources</strong><small
+                                    style="display:block; font-size:9px; color:var(--text-secondary);">Any — 50 MB</small></span>
+                            <input type="file" id="eUpload_res" multiple style="display:none;">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Version History -->
+                <div style="width:100%; background:var(--bg-secondary); border:1px solid var(--neural-line); border-radius:12px; padding:1rem;">
+                    <span class="form-label" style="color:var(--accent); display:block; margin-bottom:0.6rem;">Version History</span>
+                    <div id="verList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+
+                <button class="login-btn primary-btn" type="button" id="contentEditSave">
+                    <span>Save Changes</span>
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" id="contentEditCancel">Cancel</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeContentEdit()"></div>
+    </div>
+
+    <!-- View Workshop Popup -->
+    <div class="account-popup-bg" id="content-view-bg" hidden aria-modal="true" role="dialog">
+        <div class="account-popup wide" id="content-view-popup" hidden style="max-height:90vh; overflow-y:auto;">
+            <div class="popup-header">
+                <h1>Workshop Details</h1>
+            </div>
+            <div class="columnizer" id="contentViewBody"></div>
+            <div class="columnizer" style="margin-top:0.5rem;">
+                <button class="login-btn btn-secondary" id="contentViewEditBtn">Edit</button>
+                <button class="login-btn btn-secondary" onclick="closeContentView()">Close</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeContentView()"></div>
+    </div>
+
+    <!-- Delete Workshop Popup -->
+    <div class="account-popup-bg" id="content-delete-bg" hidden aria-modal="true" role="dialog">
+        <div class="account-popup" id="content-delete-popup" hidden>
+            <div class="popup-header">
+                <h1>Delete Workshop?</h1>
+                <p class="popup-sub">Permanently delete <strong id="contentDeleteName"
+                                                                style="color:var(--accent);"></strong>? This <strong>cannot
+                    be undone</strong>.</p>
+            </div>
+            <div class="columnizer">
+                <button class="login-btn primary-btn" type="button" id="contentDeleteConfirm">
+                    Delete Forever
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeContentDelete()">Cancel</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeContentDelete()"></div>
+    </div>
+
+    <!-- New Draft Popup -->
+    <div class="account-popup-bg" id="content-newdraft-bg" hidden aria-modal="true" role="dialog">
+        <div class="account-popup wide" id="content-newdraft-popup" hidden style="max-height:90vh; overflow-y:auto;">
+            <div class="popup-header">
+                <h1>New Draft</h1>
+                <p class="popup-sub">Create a new workshop draft</p>
+            </div>
+            <div class="columnizer">
+                <label style="display:flex; flex-direction:column; gap:6px; width:100%;">
+                    <span class="form-label">Type</span>
+                    <select class="form-input" id="nField_type">
+                        <option value="Presentation">Presentation</option>
+                        <option value="Document">Document</option>
+                        <option value="Video">Video</option>
+                    </select>
+                </label>
+                <label style="width:100%;">
+                    <span class="form-label">Workshop Title *</span>
+                    <input type="text" class="form-input" id="nField_title" placeholder="e.g. Intro to Transformers">
+                </label>
+                <label style="width:100%;">
+                    <span class="form-label">Module / Topic</span>
+                    <input type="text" class="form-input" id="nField_module" placeholder="e.g. Module 5: Attention">
+                </label>
+
+                <hr style="width:100%; border:none; border-top:1px solid var(--neural-line); margin:0.5rem 0;">
+
+                <!-- Upload Materials -->
+                <div style="width:100%;">
+                    <span class="form-label" style="display:block; margin-bottom:0.75rem;">Upload Materials</span>
+                    <label class="content-upload-area">
+                        <span style="font-size:.82rem; font-weight:600; flex:1;">Documents (PDF, DOCX)</span>
+                        <small style="color:var(--text-secondary);">Max 50MB</small>
+                        <input type="file" id="documentUpload" multiple accept=".pdf,.doc,.docx" style="display:none;">
+                    </label>
+                    <div id="documentList" class="content-file-list"></div>
+
+                    <label class="content-upload-area">
+                        <span style="font-size:.82rem; font-weight:600; flex:1;">Presentations (PPT, PPTX)</span>
+                        <small style="color:var(--text-secondary);">Max 100MB</small>
+                        <input type="file" id="presentationUpload" multiple accept=".ppt,.pptx" style="display:none;">
+                    </label>
+                    <div id="presentationList" class="content-file-list"></div>
+
+                    <label class="content-upload-area">
+                        <span style="font-size:.82rem; font-weight:600; flex:1;">Videos (MP4)</span>
+                        <small style="color:var(--text-secondary);">Max 500MB</small>
+                        <input type="file" id="videoUpload" multiple accept=".mp4,.mov,.avi" style="display:none;">
+                    </label>
+                    <div id="videoList" class="content-file-list"></div>
+                    <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+                        <input type="url" class="form-input" id="videoLink"
+                               placeholder="https://www.youtube.com/watch?v=..."
+                               style="flex:1; font-size:.82rem;">
+                        <button type="button" class="btn btn-small btn-secondary" id="addVideoLink">Add Link</button>
+                    </div>
+                    <div id="videoLinkList" class="content-file-list"></div>
+
+                    <label class="content-upload-area">
+                        <span style="font-size:.82rem; font-weight:600; flex:1;">Additional Resources</span>
+                        <small style="color:var(--text-secondary);">Any file, 50MB</small>
+                        <input type="file" id="resourceUpload" multiple style="display:none;">
+                    </label>
+                    <div id="resourceList" class="content-file-list"></div>
+                </div>
+
+                <label style="width:100%;">
+                    <span class="form-label">Description</span>
+                    <textarea class="form-input" id="nField_desc" rows="3"
+                              placeholder="Brief description..."></textarea>
+                </label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="form-label">Tags (comma-separated)</span>
+                        <input type="text" class="form-input" id="nField_tags" placeholder="transformer, attention">
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="form-label">Version</span>
+                        <input type="text" class="form-input" id="nField_version" value="1.0">
+                    </label>
+                </div>
+
+                <button class="login-btn primary-btn" type="button" id="contentNewDraftSave">
+                    <span>Save Draft</span>
+                    <div class="btn-glow login"></div>
+                </button>
+                <button type="button" class="login-btn btn-secondary" onclick="closeNewDraft()">Cancel</button>
+            </div>
+        </div>
+        <div class="backdrop-close" onclick="closeNewDraft()"></div>
+    </div>
+    {{ workshops_json|json_script:"workshop-data" }}
+    <script>
+        window.DASHBOARD_CONFIG = {
+            currentUserId: {{ current_user_id }},
+            workshops: JSON.parse(JSON.parse(document.getElementById('workshop-data').textContent)),
+            urls: {
+                editRole: "{% url 'admin:edit_role' %}",
+                deleteMember: "{% url 'admin:delete_member' %}",
+                createEvent: "{% url 'admin:create_event' %}",
+                editEvent: "{% url 'admin:edit_event' %}",
+                deleteEvent: "{% url 'admin:delete_event' %}",
+                editTeam: "{% url 'admin:edit_team' %}",
+                searchMembers: "{% url 'admin:search_members' %}",
+                deleteTeam: "{% url 'admin:admin_delete_team' %}",
+                createWorkshop: "{% url 'admin:create_workshop' %}",
+                editWorkshop: "{% url 'admin:edit_workshop' %}",
+                deleteWorkshop: "{% url 'admin:delete_workshop' %}",
+                setWorkshopStatus: "{% url 'admin:set_workshop_status' %}",
+            }
+        };
+    </script>
+    <script src="{% static "script.js" %}"></script>
+    <script src="{% static "admin.js" %}"></script>
 
 {% endblock %}
