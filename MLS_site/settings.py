@@ -151,7 +151,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 SITE_URL = 'http://127.0.0.1:8000/'
-SITE_ID = 2
+SITE_ID = 4
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -169,7 +169,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'nazliiinazeer@gmail.com'
 # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_HOST_PASSWORD = "nffs wdgj frzs gkfw"
-DEFAULT_FROM_EMAIL = "MLS <nazliiinazeer@gmail.com>"
+DEFAULT_FROM_EMAIL = "nazliiinazeer@gmail.com"
 
 SOCIALACCOUNT_ADAPTER = "accounts.adapter.MySocialAccountAdapter"
 ACCOUNT_ADAPTER = "accounts.adapter.MyAccountAdapter"

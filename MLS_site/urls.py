@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls), 
 
     # ── Website pages (home, dashboard, teams, events, profile, meet-the-team)
     path("", include("website.urls")),
@@ -19,7 +19,7 @@ urlpatterns = [
 
     # ── Event API endpoints  (/event/create/, /event/<id>/join/, etc.)
     path("event/", include("website.eventurls")),
-    path("admin/", include("website.adminurls")),
+    path("site-admin/", include("website.adminurls")),
 ]
 
 if settings.DEBUG:

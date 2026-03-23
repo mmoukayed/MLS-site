@@ -416,7 +416,7 @@
     <!--ROLE POPUP-->
     <div class="account-popup-bg" id="role-popup-bg" hidden aria-modal="true" role="dialog">
         <form class="account-popup" id="role-popup" hidden onsubmit="submitRoleChange(event)" method="POST"
-              action="{% url 'admin:edit_role' %}">
+              action="{% url 'site-admin:edit_role' %}">
             <div class="popup-header">
                 <h1>Edit Role</h1>
                 <p class="popup-sub">Change the role for <strong id="role-user-name"></strong></p>
@@ -448,7 +448,7 @@
     <!-- DELETE USER POPUP-->
     <div class="account-popup-bg" id="delete-popup-bg" hidden aria-modal="true" role="dialog">
         <form class="account-popup" id="delete-popup" hidden onsubmit="submitDelete(event)" method="POST"
-              action="{% url 'admin:delete_member' %}">
+              action="{% url 'site-admin:delete_member' %}">
 
             <div class="popup-header">
                 <h1>Delete User</h1>
@@ -483,7 +483,7 @@
               id="create-event-popup"
               hidden
               method="POST"
-              action="{% url 'admin:create_event' %}"
+              action="{% url 'site-admin:create_event' %}"
               enctype="multipart/form-data">
             <div class="popup-header">
                 <h1>Create Event</h1>
@@ -537,7 +537,7 @@
               id="edit-event-popup"
               hidden
               method="POST"
-              action="{% url 'admin:edit_event' %}"
+              action="{% url 'site-admin:edit_event' %}"
               enctype="multipart/form-data">
             <div class="popup-header">
                 <h1>Edit Event</h1>
@@ -621,7 +621,7 @@
         <form class="account-popup" id="delete-event-popup" hidden
               onsubmit="submitDeleteEvent(event)"
               method="POST"
-              action="{% url 'admin:delete_event' %}">
+              action="{% url 'site-admin:delete_event' %}">
             <div class="popup-header">
                 <h2>Delete Event</h2>
                 <p class="popup-sub">Delete <strong id="delete-event-title"></strong>?</p>
@@ -668,7 +668,7 @@
     <!-- Edit Team Popup -->
     <div class="account-popup-bg" id="edit-team-bg" hidden>
         <form class="account-popup wide" id="edit-team-popup" hidden
-              method="POST" action="{% url 'admin:edit_team' %}">
+              method="POST" action="{% url 'site-admin:edit_team' %}">
             <div class="popup-header">
                 <h1>Edit Team</h1>
                 <p class="popup-sub">Update team details, members and leaders</p>
@@ -749,7 +749,7 @@
     <div class="account-popup-bg" id="delete-team-bg" hidden>
         <form class="account-popup" id="delete-team-popup" hidden
               onsubmit="submitDeleteTeam(event)"
-              method="POST" action="{% url 'admin:admin_delete_team' %}">
+              method="POST" action="{% url 'site-admin:admin_delete_team' %}">
             <div class="popup-header">
                 <h2>Delete Team</h2>
                 <p class="popup-sub">Delete <strong id="delete-team-title"></strong>?
@@ -991,18 +991,18 @@
             currentUserId: {{ current_user_id }},
             workshops: JSON.parse(JSON.parse(document.getElementById('workshop-data').textContent)),
             urls: {
-                editRole: "{% url 'admin:edit_role' %}",
-                deleteMember: "{% url 'admin:delete_member' %}",
-                createEvent: "{% url 'admin:create_event' %}",
-                editEvent: "{% url 'admin:edit_event' %}",
-                deleteEvent: "{% url 'admin:delete_event' %}",
-                editTeam: "{% url 'admin:edit_team' %}",
-                searchMembers: "{% url 'admin:search_members' %}",
-                deleteTeam: "{% url 'admin:admin_delete_team' %}",
-                createWorkshop: "{% url 'admin:create_workshop' %}",
-                editWorkshop: "{% url 'admin:edit_workshop' %}",
-                deleteWorkshop: "{% url 'admin:delete_workshop' %}",
-                setWorkshopStatus: "{% url 'admin:set_workshop_status' %}",
+                editRole: "{% url 'site-admin:edit_role' %}",
+                deleteMember: "{% url 'site-admin:delete_member' %}",
+                createEvent: "{% url 'site-admin:create_event' %}",
+                editEvent: "{% url 'site-admin:edit_event' %}",
+                deleteEvent: "{% url 'site-admin:delete_event' %}",
+                editTeam: "{% url 'site-admin:edit_team' %}",
+                searchMembers: "{% url 'site-admin:search_members' %}",
+                deleteTeam: "{% url 'site-admin:admin_delete_team' %}",
+                createWorkshop: "{% url 'site-admin:create_workshop' %}",
+                editWorkshop: "{% url 'site-admin:edit_workshop' %}",
+                deleteWorkshop: "{% url 'site-admin:delete_workshop' %}",
+                setWorkshopStatus: "{% url 'site-admin:set_workshop_status' %}",
             }
         };
     </script>

@@ -1,9 +1,9 @@
 from django.urls import path
 from . import views
 
-app_name = "admin"
+app_name = "site-admin"
 
-url_patterns = [
+urlpatterns = [
     path("users/edit-role/", views.edit_role, name="edit_role"),
     path("users/delete/", views.delete_member, name="delete_member"),
 

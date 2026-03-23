@@ -24,12 +24,6 @@ def home(request):
     # prereqData context processor provides majors + nationalities globally
     return render(request, "index.html")
 
-@login_required()
-def dashboard_redirect(request):
-    if request.user.is_staff:
-        return redirect("website:admin_dashboard")
-    return redirect("website:student_dashboard")
-
 def meet_the_team(request):
     return render(request, "meettheteam.html")
 

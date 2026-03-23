@@ -26,7 +26,10 @@
         {% if request.user.is_authenticated %}
             <a href="{% url 'website:events' %}">Events</a>
             <a href="{% url 'website:teams' %}">Teams</a>
-            <a href="{% url 'website:dashboard' %}">Dashboard</a>
+            <a href="{% url 'website:student_dashboard' %}">Dashboard</a>
+            {% if user.is_staff %}
+            <a href="{% url 'website:admin_dashboard' %}">Admin Dashboard</a>
+            {% endif %}
             <a href="{% url 'website:profile' %}">Profile</a>
             <a href="{% url 'accounts:logout' %}" class="nav-logout">Logout</a>
         {% else %}
@@ -90,7 +93,7 @@
                 required
                 autocomplete="email"
                 pattern="^.+@(rit\.edu|g\.rit\.edu)$"
-                title="Please use your RIT email address"
+                title="Please use your RIT email addddress"
             />
             <button class="login-btn" id="loginSubmitBtn" type="submit">
                 <span class="spinner" hidden></span>
