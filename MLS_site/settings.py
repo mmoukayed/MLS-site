@@ -104,6 +104,7 @@ TEMPLATES = [
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = BASE_DIR / "static_root"
 
 WSGI_APPLICATION = 'MLS_site.wsgi.application'
 
@@ -151,7 +152,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 SITE_URL = 'http://127.0.0.1:8000/'
-SITE_ID = 4
+SITE_ID = 1
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -166,10 +167,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nazliiinazeer@gmail.com'
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_HOST_PASSWORD = "nffs wdgj frzs gkfw"
-DEFAULT_FROM_EMAIL = "nazliiinazeer@gmail.com"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 
 SOCIALACCOUNT_ADAPTER = "accounts.adapter.MySocialAccountAdapter"
 ACCOUNT_ADAPTER = "accounts.adapter.MyAccountAdapter"

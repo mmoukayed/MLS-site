@@ -9,3 +9,4 @@ db.sqlite3
 client_secret.json
 __pycache__/
 *.pyc
+static_root/

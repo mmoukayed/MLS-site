@@ -2,7 +2,7 @@ from accounts.models import Major
 from django_countries import countries
 from django.utils import timezone
 from website.models import Event, Team, ActivityLog
-
+import allauth.socialaccount.models as SocialAccountModels
 
 
 def prereqData(request):
@@ -11,10 +11,14 @@ def prereqData(request):
     Provides majors + nationalities for the signup modal in base.html,
     so no view needs to pass them manually.
     """
+    social_en = False
+    if SocialAccountModels.SocialApp.objects.count() > 0:
+        social_en = True
     return {
         "majors":        Major.objects.all().order_by("name"),
         "nationalities": list(countries),
         "now":           timezone.now(),   # handy for footer copyright year etc.
+        "socials_enabled": social_en,
     }
 def log_activity(action, message):
     ActivityLog.objects.create(action=action, message=message)

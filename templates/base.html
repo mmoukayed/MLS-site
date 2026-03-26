@@ -77,12 +77,13 @@
 
         <!-- Step 1: Login options -->
         <div id="login-options" class="columnizer">
+            {% if socials_enabled %}
             <button class="social-btn" type="button" >
                 {% load socialaccount %}
                 <img src="{% static 'assets/Google Logo.svg' %}" width="20" height="20" alt="Google">
                 <a href="{% provider_login_url 'google' %}"><span>Continue with Google</span></a>
             </button>
-
+            {% endif %}
             <div class="or-divider"><span>or use email</span></div>
 
             <input
@@ -149,6 +150,7 @@
 
         <!-- Step 1: Email entry -->
         <div id="signup-options" class="columnizer">
+            {% if socials_enabled %}
             <button class="social-btn" type="button" >
                 {% load socialaccount %}
                 <img src="{% static 'assets/Google Logo.svg' %}" width="20" height="20" alt="Google">
@@ -156,7 +158,8 @@
                     <span>Continue with Google</span>
                 </a>
             </button>
-
+            {% endif %}
+            
             <div class="or-divider"><span>or use email</span></div>
 
             <input
